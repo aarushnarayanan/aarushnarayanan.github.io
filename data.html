@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Iceberg — Always On</title>
+  <style>
+/* =========================================
+   ALWAYS ON — SHARED STYLESHEET
+   ========================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+  --bg:          #07090f;
+  --bg2:         #0d1117;
+  --bg3:         #111827;
+  --cyan:        #00e5ff;
+  --amber:       #ffb300;
+  --red:         #ff4444;
+  --green:       #00ff88;
+  --purple:      #c084fc;
+  --text:        #c9d1d9;
+  --text-dim:    #6e7681;
+  --text-bright: #f0f6fc;
+  --border:      #21262d;
+  --mono:        'IBM Plex Mono', monospace;
+  --serif:       'Libre Baskerville', serif;
+}
+
+/* ---- RESET ---- */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ---- GRAIN + SCANLINES ---- */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.4;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.008) 2px, rgba(0,229,255,0.008) 4px);
+  pointer-events: none; z-index: 9998;
+}
+
+/* ---- NAVIGATION ---- */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(7,9,15,0.94);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2.5rem;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.nav-logo span { color: var(--text-dim); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  padding-bottom: 2px;
+}
+.nav-links a:hover,
+.nav-links a.active { color: var(--cyan); border-bottom: 1px solid var(--cyan); }
+
+/* ---- PAGE WRAPPER ---- */
+.page {
+  padding-top: 54px;
+}
+
+/* ---- HERO STRIPE ---- */
+.page-hero {
+  padding: 5rem 4rem 3.5rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 100% at 90% 50%, rgba(0,229,255,0.03) 0%, transparent 70%);
+  pointer-events: none;
+}
+.page-tag {
+  font-size: 10px;
+  color: var(--cyan);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.page-tag::before { content: '> '; color: var(--text-dim); }
+.page-title {
+  font-family: var(--serif);
+  font-size: clamp(2.4rem, 5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-bright);
+  margin-bottom: 1rem;
+}
+.page-title em { font-style: italic; color: var(--amber); }
+.page-title em.c { color: var(--cyan); }
+.page-subtitle {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  max-width: 60ch;
+}
+
+/* ---- MAIN CONTENT AREA ---- */
+.content-wrap {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 4rem 2rem 6rem;
+}
+.content-wrap.wide {
+  max-width: 1100px;
+}
+
+/* ---- TYPOGRAPHY ---- */
+h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700;
+  color: var(--text-bright);
+  line-height: 1.15;
+  margin: 3rem 0 1rem;
+}
+h2:first-child { margin-top: 0; }
+h2 em { font-style: italic; color: var(--amber); }
+h3 {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin: 2.5rem 0 0.75rem;
+}
+p {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--text);
+  max-width: 68ch;
+  margin-bottom: 1.25rem;
+}
+p.wide { max-width: 100%; }
+
+/* ---- SECTION LABEL ---- */
+.section-label {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.75rem;
+}
+.section-label::before { content: '// '; color: var(--text-dim); }
+
+/* ---- PULL QUOTE ---- */
+.pull-quote {
+  border-left: 3px solid var(--amber);
+  padding: 1.5rem 2rem;
+  margin: 2.5rem 0;
+  background: rgba(255,179,0,0.04);
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--text-bright);
+  line-height: 1.7;
+}
+.pull-quote cite {
+  display: block;
+  font-size: 0.8rem;
+  font-style: normal;
+  font-family: var(--mono);
+  color: var(--text-dim);
+  margin-top: 0.75rem;
+  letter-spacing: 0.05em;
+}
+.pull-quote.cyan { border-color: var(--cyan); background: rgba(0,229,255,0.04); }
+
+/* ---- PLACEHOLDER BLOCKS ---- */
+.placeholder {
+  border: 1px dashed rgba(255,179,0,0.4);
+  background: rgba(255,179,0,0.03);
+  padding: 2rem;
+  margin: 1.5rem 0;
+  position: relative;
+}
+.placeholder-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.placeholder-label::before {
+  content: '✎';
+  font-size: 12px;
+}
+.placeholder p {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.7;
+  font-style: italic;
+  max-width: 100%;
+  margin: 0;
+}
+.placeholder-hint {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 0.5rem;
+  opacity: 0.7;
+}
+
+/* ---- DIVIDER ---- */
+hr.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 3rem 0;
+}
+
+/* ---- CARDS ---- */
+.card {
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.25s;
+}
+.card:hover { border-color: var(--amber); }
+.card-label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.5rem;
+}
+.card-title {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 0.3rem;
+}
+.card-meta {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+}
+.card p { margin: 0; font-size: 0.95rem; line-height: 1.75; }
+
+/* ---- TAGS ---- */
+.tag {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  margin: 0.75rem 0.3rem 0 0;
+}
+.tag-beam     { border: 1px solid rgba(0,229,255,0.4);  color: var(--cyan); }
+.tag-exhibit  { border: 1px solid rgba(255,179,0,0.4);  color: var(--amber); }
+.tag-argument { border: 1px solid rgba(255,68,68,0.4);  color: var(--red); }
+.tag-method   { border: 1px solid rgba(192,132,252,0.4);color: var(--purple); }
+
+/* ---- BUTTONS ---- */
+.btn {
+  display: inline-block;
+  padding: 0.85rem 1.75rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+.btn-primary {
+  background: var(--cyan);
+  color: var(--bg);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.btn-primary:hover { background: var(--text-bright); box-shadow: 0 6px 20px rgba(0,229,255,0.25); transform: translateY(-2px); }
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+.btn-amber {
+  background: var(--amber);
+  color: var(--bg);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.btn-amber:hover { opacity: 0.85; transform: translateY(-2px); }
+
+/* ---- PAGE NAV (prev/next) ---- */
+.page-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 2.5rem;
+  margin-top: 4rem;
+}
+.page-nav a {
+  text-decoration: none;
+  color: var(--text-dim);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.page-nav a:hover { color: var(--cyan); }
+
+/* ---- FOOTER ---- */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-dim);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ---- SCROLL REVEAL ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ---- ANIMATIONS ---- */
+@keyframes fadeUp   { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+@keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+@keyframes blink    { 0%,100% { opacity:1; } 50% { opacity:0.25; } }
+@keyframes pulse    { 0%,100% { opacity:1; } 50% { opacity:0.45; } }
+@keyframes scandown { from { transform:translateY(-100%); } to { transform:translateY(100vh); } }
+
+.anim-fade-up { opacity:0; animation: fadeUp 0.65s ease forwards; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.25s; }
+.delay-3 { animation-delay: 0.4s; }
+.delay-4 { animation-delay: 0.55s; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  nav { padding: 0 1rem; }
+  .nav-links { display: none; }
+  .page-hero { padding: 4rem 1.5rem 2.5rem; }
+  .content-wrap { padding: 2.5rem 1.25rem 4rem; }
+  footer { flex-direction: column; text-align: center; }
+}
+
+</style>
+  <style>
+    /* ICEBERG */
+    .iceberg-wrap { max-width: 880px; margin: 0 auto; }
+
+    .iceberg-above {
+      background: linear-gradient(180deg, rgba(0,229,255,0.04), rgba(0,229,255,0.1));
+      border: 1px solid rgba(0,229,255,0.25);
+      border-bottom: 2px dashed rgba(0,229,255,0.4);
+      padding: 2.5rem 2rem;
+    }
+    .iceberg-label {
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .iceberg-label.above { color: var(--cyan); }
+    .iceberg-label.below { color: var(--amber); }
+    .waterline {
+      text-align: center;
+      font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--cyan); background: rgba(0,229,255,0.07);
+      border-left: 1px solid rgba(0,229,255,0.25);
+      border-right: 1px solid rgba(0,229,255,0.25);
+      padding: 0.5rem 1rem;
+    }
+    .iceberg-below {
+      background: linear-gradient(180deg, rgba(255,179,0,0.06), rgba(255,68,68,0.04));
+      border: 1px solid rgba(255,179,0,0.2);
+      border-top: none;
+      padding: 2.5rem 2rem;
+    }
+    .iceberg-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    .iceberg-item {
+      padding: 1.25rem;
+      background: var(--bg);
+    }
+    .iceberg-above .iceberg-item { background: rgba(0,229,255,0.02); }
+    .iceberg-below .iceberg-item { background: rgba(255,179,0,0.02); }
+    .iceberg-item strong {
+      display: block;
+      font-family: var(--serif);
+      font-size: 0.95rem;
+      color: var(--text-bright);
+      margin-bottom: 0.5rem;
+    }
+    .iceberg-item p {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      line-height: 1.65;
+      max-width: 100%;
+      margin: 0;
+    }
+
+    /* STAKES GRID */
+    .stakes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+    .stake-cell { background: var(--bg2); padding: 2rem 1.5rem; }
+    .stake-label {
+      font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .stake-label.wins  { color: var(--green); }
+    .stake-label.loses { color: var(--red); }
+    .stake-label.stake { color: var(--amber); }
+    .stake-cell p { font-size: 0.9rem; line-height: 1.7; max-width: 100%; margin: 0; }
+
+    /* VALUES TABLE */
+    .values-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      font-size: 12px;
+    }
+    .values-table th {
+      text-align: left;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+    }
+    .values-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .values-table tr:last-child td { border-bottom: none; }
+    .values-table .col-stated { color: var(--cyan); }
+    .values-table .col-actual { color: var(--amber); }
+    .values-table .col-cost   { color: var(--red); }
+
+    /* SYSTEM MAP */
+    .system-map {
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    .system-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      font-size: 12px;
+    }
+    .system-node {
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.85rem;
+      white-space: nowrap;
+      font-size: 11px;
+    }
+    .node-corp  { border-color: rgba(255,68,68,0.4);  color: var(--red); }
+    .node-agent { border-color: rgba(0,229,255,0.4);  color: var(--cyan); }
+    .node-user  { border-color: rgba(255,179,0,0.4);  color: var(--amber); }
+    .node-data  { border-color: rgba(192,132,252,0.4);color: var(--purple); }
+    .arrow { color: var(--text-dim); font-size: 14px; }
+
+    @media (max-width:700px) {
+      .iceberg-row  { grid-template-columns: 1fr; }
+      .stakes-grid  { grid-template-columns: 1fr; }
+      .system-row   { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">Always On <span>// agentic ai</span></a>
+  <ul class="nav-links">
+    <li><a href="essay.html">Essay</a></li>
+    <li><a href="sources.html">Sources</a></li>
+    <li><a href="interview.html">Interview</a></li>
+    <li><a href="data.html">Data</a></li>
+    <li><a href="game.html">The Game</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <div class="page-hero">
+    <div class="page-tag">Data &amp; Visualization</div>
+    <h1 class="page-title anim-fade-up">The <em>Iceberg</em></h1>
+    <p class="page-subtitle anim-fade-up delay-2">What people see about agentic AI — and what the system conceals underneath.</p>
+  </div>
+
+  <div class="content-wrap wide">
+
+    <!-- ICEBERG VISUALIZATION -->
+    <div class="section-label reveal">Above and Below</div>
+    <p class="reveal" style="margin-bottom:2rem;">The "iceberg" metaphor structures this project: the visible surface of agentic AI (helpful, neutral, a tool you control) conceals the systems, incentives, and power dynamics underneath. Here's what each level actually contains.</p>
+
+    <div class="iceberg-wrap reveal">
+      <div class="iceberg-above">
+        <div class="iceberg-label above">Above the waterline — what most people see</div>
+        <div class="iceberg-row">
+          <div class="iceberg-item">
+            <strong>"It's just a productivity tool"</strong>
+            <p>Saves time, reduces inbox anxiety, automates repetitive tasks. The AI is framed as labor-saving convenience.</p>
+          </div>
+          <div class="iceberg-item">
+            <strong>"I'm in control — I can turn it off"</strong>
+            <p>Settings panels, permission toggles, and onboarding flows create the appearance of user control.</p>
+          </div>
+          <div class="iceberg-item">
+            <strong>"The AI is neutral"</strong>
+            <p>It's an algorithm. No agenda. It does exactly what you ask, nothing more, nothing less.</p>
+          </div>
+          <div class="iceberg-item">
+            <strong>"Big companies are responsible"</strong>
+            <p>Ethics boards, legal teams, safety guidelines, and government oversight keep it in check.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="waterline">~ ~ ~ ~ waterline ~ ~ ~ ~</div>
+
+      <div class="iceberg-below">
+        <div class="iceberg-label below">Below the waterline — what the system conceals</div>
+        <div class="iceberg-row">
+          <div class="iceberg-item">
+            <strong>Goals are defined by corporations, not users</strong>
+            <p>The agent optimizes for outcomes set by product teams whose incentives include engagement, retention, and data extraction — alongside helpfulness.</p>
+          </div>
+          <div class="iceberg-item">
+            <strong>Agentic data is the most intimate data ever collected</strong>
+            <p>Not browsing habits — but how you actually work, communicate, prioritize, and feel, observed in real time at scale.</p>
+          </div>
+          <div class="iceberg-item">
+            <strong>Consent was never meaningfully given</strong>
+            <p>TOS agreements, default-on settings, and dark patterns replace informed choice. The legal fiction of "acceptance" does not equal understanding.</p>
+          </div>
+          <div class="iceberg-item">
+            <strong>Errors happen at machine speed — and are irreversible</strong>
+            <p>When an agent makes a mistake, it may have already acted: sent the email, booked the flight, shared the file. Undo is not always possible.</p>
+          </div>
+          <div class="iceberg-item">
+            <strong>Automation risk is unevenly distributed</strong>
+            <p>Workers in routine-task roles face displacement. Executives using agents see productivity gains. The technology widens existing inequality gaps.</p>
+          </div>
+          <div class="iceberg-item">
+            <strong>The "assistant" relationship is asymmetric by design</strong>
+            <p>Your agent learns you; you don't learn it. Data, knowledge, and leverage flow in one direction — away from the user.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- VALUES TABLE -->
+    <div class="section-label reveal">What the System Is Actually Valuing</div>
+    <p class="reveal">Every system values something — often different from what it claims to value. Here's the gap between the stated values of agentic AI platforms and the values embedded in their actual design.</p>
+
+    <table class="values-table reveal">
+      <thead>
+        <tr>
+          <th>What they say they value</th>
+          <th>What the design actually values</th>
+          <th>Who pays the cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="col-stated">User productivity</td>
+          <td class="col-actual">Engagement and platform stickiness</td>
+          <td class="col-cost">Users whose attention is monetized</td>
+        </tr>
+        <tr>
+          <td class="col-stated">Privacy and data security</td>
+          <td class="col-actual">Behavioral data extraction at maximum resolution</td>
+          <td class="col-cost">Anyone whose data trains future models or informs ad targeting</td>
+        </tr>
+        <tr>
+          <td class="col-stated">User control and consent</td>
+          <td class="col-actual">Frictionless adoption and default-on features</td>
+          <td class="col-cost">Users who didn't know what they agreed to</td>
+        </tr>
+        <tr>
+          <td class="col-stated">Workforce empowerment</td>
+          <td class="col-actual">Labor cost reduction for corporate clients</td>
+          <td class="col-cost">Workers in automatable roles with no transition support</td>
+        </tr>
+        <tr>
+          <td class="col-stated">Safety and alignment</td>
+          <td class="col-actual">Shipping velocity and market share</td>
+          <td class="col-cost">Users affected by misaligned agent behavior before issues are fixed</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr class="divider">
+
+    <!-- SYSTEM MAP -->
+    <div class="section-label reveal">How the System Flows</div>
+    <p class="reveal">Power, data, and value don't circulate equally. Here's how the relationships are actually structured:</p>
+
+    <div class="system-map reveal">
+      <div class="system-row">
+        <span class="system-node node-corp">Tech Corporation</span>
+        <span class="arrow">→ builds &amp; owns →</span>
+        <span class="system-node node-agent">AI Agent</span>
+        <span class="arrow">→ acts inside →</span>
+        <span class="system-node node-user">User's Digital Life</span>
+      </div>
+      <div class="system-row">
+        <span class="system-node node-user">User's Digital Life</span>
+        <span class="arrow">→ generates →</span>
+        <span class="system-node node-data">Behavioral Data</span>
+        <span class="arrow">→ flows back to →</span>
+        <span class="system-node node-corp">Tech Corporation</span>
+      </div>
+      <div class="system-row" style="margin-top:0.5rem; color: var(--text-dim); font-size:11px;">
+        The user receives: productivity features.
+        The corporation receives: an ever-more-detailed model of how users live, think, and make decisions.
+        These are not equivalent exchanges.
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- STAKES -->
+    <div class="section-label reveal">Who Wins. Who Loses. What's at Stake.</div>
+
+    <div class="stakes-grid reveal">
+      <div class="stake-cell">
+        <div class="stake-label wins">Who Wins</div>
+        <p>Technology companies gaining behavioral data at unprecedented resolution. Knowledge workers who use agents to multiply output and value. Investors in AI infrastructure. Organizations replacing labor costs with software subscriptions at scale.</p>
+      </div>
+      <div class="stake-cell">
+        <div class="stake-label loses">Who Loses</div>
+        <p>Workers in roles automatable by agents — with no equivalent replacements being created at the same pace. Users who cannot read their own data, audit agent decisions, or contest what they consented to. Anyone whose professional or personal relationship is damaged by an agent acting at machine speed without full context.</p>
+      </div>
+      <div class="stake-cell">
+        <div class="stake-label stake">What's at Stake</div>
+        <p>The concept of authorship over your own daily life. The meaning of consent in a digital space. Labor dignity across economic classes. And the slower, harder-to-name erosion of the habit of deciding things for yourself — which, once lost, is very difficult to rebuild.</p>
+      </div>
+    </div>
+
+    <div class="page-nav reveal">
+      <a href="interview.html">← Interview</a>
+      <a href="game.html">The Game →</a>
+    </div>
+
+  </div><!-- .content-wrap -->
+
+</div><!-- .page -->
+
+<footer>
+  <span>Always On — WCWP 10B Research Project · UCSD</span>
+  <span>Space: Digital Workspace &nbsp;·&nbsp; Problem: Agentic AI &amp; Autonomy</span>
+  <span>Academic · Non-commercial</span>
+</footer>
+
+<script>
+(function () {
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.08 }
+  );
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+})();
+(function () {
+  const current = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links a').forEach((a) => {
+    const href = a.getAttribute('href');
+    if (href === current || (current === '' && href === 'index.html')) {
+      a.classList.add('active');
+    }
+  });
+})();
+</script>
+</body>
+</html>
