@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Essay — Always On</title>
+  <style>
+/* =========================================
+   ALWAYS ON — SHARED STYLESHEET
+   ========================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+  --bg:          #07090f;
+  --bg2:         #0d1117;
+  --bg3:         #111827;
+  --cyan:        #00e5ff;
+  --amber:       #ffb300;
+  --red:         #ff4444;
+  --green:       #00ff88;
+  --purple:      #c084fc;
+  --text:        #c9d1d9;
+  --text-dim:    #6e7681;
+  --text-bright: #f0f6fc;
+  --border:      #21262d;
+  --mono:        'IBM Plex Mono', monospace;
+  --serif:       'Libre Baskerville', serif;
+}
+
+/* ---- RESET ---- */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ---- GRAIN + SCANLINES ---- */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.4;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.008) 2px, rgba(0,229,255,0.008) 4px);
+  pointer-events: none; z-index: 9998;
+}
+
+/* ---- NAVIGATION ---- */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(7,9,15,0.94);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2.5rem;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.nav-logo span { color: var(--text-dim); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  padding-bottom: 2px;
+}
+.nav-links a:hover,
+.nav-links a.active { color: var(--cyan); border-bottom: 1px solid var(--cyan); }
+
+/* ---- PAGE WRAPPER ---- */
+.page {
+  padding-top: 54px;
+}
+
+/* ---- HERO STRIPE ---- */
+.page-hero {
+  padding: 5rem 4rem 3.5rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 100% at 90% 50%, rgba(0,229,255,0.03) 0%, transparent 70%);
+  pointer-events: none;
+}
+.page-tag {
+  font-size: 10px;
+  color: var(--cyan);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.page-tag::before { content: '> '; color: var(--text-dim); }
+.page-title {
+  font-family: var(--serif);
+  font-size: clamp(2.4rem, 5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-bright);
+  margin-bottom: 1rem;
+}
+.page-title em { font-style: italic; color: var(--amber); }
+.page-title em.c { color: var(--cyan); }
+.page-subtitle {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  max-width: 60ch;
+}
+
+/* ---- MAIN CONTENT AREA ---- */
+.content-wrap {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 4rem 2rem 6rem;
+}
+.content-wrap.wide {
+  max-width: 1100px;
+}
+
+/* ---- TYPOGRAPHY ---- */
+h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700;
+  color: var(--text-bright);
+  line-height: 1.15;
+  margin: 3rem 0 1rem;
+}
+h2:first-child { margin-top: 0; }
+h2 em { font-style: italic; color: var(--amber); }
+h3 {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin: 2.5rem 0 0.75rem;
+}
+p {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--text);
+  max-width: 68ch;
+  margin-bottom: 1.25rem;
+}
+p.wide { max-width: 100%; }
+
+/* ---- SECTION LABEL ---- */
+.section-label {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.75rem;
+}
+.section-label::before { content: '// '; color: var(--text-dim); }
+
+/* ---- PULL QUOTE ---- */
+.pull-quote {
+  border-left: 3px solid var(--amber);
+  padding: 1.5rem 2rem;
+  margin: 2.5rem 0;
+  background: rgba(255,179,0,0.04);
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--text-bright);
+  line-height: 1.7;
+}
+.pull-quote cite {
+  display: block;
+  font-size: 0.8rem;
+  font-style: normal;
+  font-family: var(--mono);
+  color: var(--text-dim);
+  margin-top: 0.75rem;
+  letter-spacing: 0.05em;
+}
+.pull-quote.cyan { border-color: var(--cyan); background: rgba(0,229,255,0.04); }
+
+/* ---- PLACEHOLDER BLOCKS ---- */
+.placeholder {
+  border: 1px dashed rgba(255,179,0,0.4);
+  background: rgba(255,179,0,0.03);
+  padding: 2rem;
+  margin: 1.5rem 0;
+  position: relative;
+}
+.placeholder-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.placeholder-label::before {
+  content: '✎';
+  font-size: 12px;
+}
+.placeholder p {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.7;
+  font-style: italic;
+  max-width: 100%;
+  margin: 0;
+}
+.placeholder-hint {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 0.5rem;
+  opacity: 0.7;
+}
+
+/* ---- DIVIDER ---- */
+hr.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 3rem 0;
+}
+
+/* ---- CARDS ---- */
+.card {
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.25s;
+}
+.card:hover { border-color: var(--amber); }
+.card-label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.5rem;
+}
+.card-title {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 0.3rem;
+}
+.card-meta {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+}
+.card p { margin: 0; font-size: 0.95rem; line-height: 1.75; }
+
+/* ---- TAGS ---- */
+.tag {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  margin: 0.75rem 0.3rem 0 0;
+}
+.tag-beam     { border: 1px solid rgba(0,229,255,0.4);  color: var(--cyan); }
+.tag-exhibit  { border: 1px solid rgba(255,179,0,0.4);  color: var(--amber); }
+.tag-argument { border: 1px solid rgba(255,68,68,0.4);  color: var(--red); }
+.tag-method   { border: 1px solid rgba(192,132,252,0.4);color: var(--purple); }
+
+/* ---- BUTTONS ---- */
+.btn {
+  display: inline-block;
+  padding: 0.85rem 1.75rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+.btn-primary {
+  background: var(--cyan);
+  color: var(--bg);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.btn-primary:hover { background: var(--text-bright); box-shadow: 0 6px 20px rgba(0,229,255,0.25); transform: translateY(-2px); }
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+.btn-amber {
+  background: var(--amber);
+  color: var(--bg);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.btn-amber:hover { opacity: 0.85; transform: translateY(-2px); }
+
+/* ---- PAGE NAV (prev/next) ---- */
+.page-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 2.5rem;
+  margin-top: 4rem;
+}
+.page-nav a {
+  text-decoration: none;
+  color: var(--text-dim);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.page-nav a:hover { color: var(--cyan); }
+
+/* ---- FOOTER ---- */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-dim);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ---- SCROLL REVEAL ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ---- ANIMATIONS ---- */
+@keyframes fadeUp   { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+@keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+@keyframes blink    { 0%,100% { opacity:1; } 50% { opacity:0.25; } }
+@keyframes pulse    { 0%,100% { opacity:1; } 50% { opacity:0.45; } }
+@keyframes scandown { from { transform:translateY(-100%); } to { transform:translateY(100vh); } }
+
+.anim-fade-up { opacity:0; animation: fadeUp 0.65s ease forwards; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.25s; }
+.delay-3 { animation-delay: 0.4s; }
+.delay-4 { animation-delay: 0.55s; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  nav { padding: 0 1rem; }
+  .nav-links { display: none; }
+  .page-hero { padding: 4rem 1.5rem 2.5rem; }
+  .content-wrap { padding: 2.5rem 1.25rem 4rem; }
+  footer { flex-direction: column; text-align: center; }
+}
+
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">Always On <span>// agentic ai</span></a>
+  <ul class="nav-links">
+    <li><a href="essay.html">Essay</a></li>
+    <li><a href="sources.html">Sources</a></li>
+    <li><a href="interview.html">Interview</a></li>
+    <li><a href="data.html">Data</a></li>
+    <li><a href="game.html">The Game</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <div class="page-hero">
+    <div class="page-tag">Research Narrative</div>
+    <h1 class="page-title anim-fade-up">The Space You<br><em>Didn't Choose</em></h1>
+    <p class="page-subtitle anim-fade-up delay-2">A research narrative on agentic AI — the digital spaces we live in, the systems we didn't design, and who holds the power inside them.</p>
+  </div>
+
+  <div class="content-wrap">
+
+    <!-- =============================================
+         SECTION 1: PERSONAL EXPERIENCE / "ME" PROBLEM
+         THIS IS YOUR WRITING — placeholder below
+         ============================================= -->
+    <div class="section-label reveal">Part One — Surface Understanding</div>
+    <h2 class="reveal">What I <em>Saw</em> First</h2>
+
+    <div class="placeholder reveal">
+      <div class="placeholder-label">Your Personal Introduction — Write This Section</div>
+      <p>Introduce the space: your digital workspace (email, calendar, files, apps). Describe your own experience with AI tools — when did you first encounter one that acted on your behalf without asking? What did it do? How did it feel?</p>
+      <span class="placeholder-hint">Suggested length: 150–250 words. Use first person. Be specific — name the tool, the moment, the reaction.</span>
+    </div>
+
+    <div class="placeholder reveal">
+      <div class="placeholder-label">The "Me" Problem — Write This Section</div>
+      <p>Narrate your personal stake in this issue. Why does this space matter to you specifically? Are you a student whose university uses AI tools? A worker in a field being automated? Someone who has used these tools and noticed something unsettling? This is your "me" problem — the personal thread that connects you to the research.</p>
+      <span class="placeholder-hint">Suggested length: 150–200 words. This is where your voice should come through most clearly.</span>
+    </div>
+
+    <!-- Surface understanding — this content is written for you -->
+    <h3 class="reveal">The Common Understanding</h3>
+    <p class="reveal">The common understanding of AI assistants is that they are tools. You speak, they respond. You ask, they answer. The framing is one of service: the AI does what you tell it, nothing more. It lives inside your phone or your laptop, it waits, and when summoned, it helps.</p>
+    <p class="reveal">But something has shifted. A new category of AI — called "agentic AI" — does not wait to be summoned. It is given goals and handed the tools to pursue them: access to your email, your calendar, your files, your browser. It can draft messages, book appointments, run code, make purchases. It doesn't just answer; it <em>acts</em>. And increasingly, it acts without asking.</p>
+
+    <div class="placeholder reveal">
+      <div class="placeholder-label">Essential Question — Write This Section</div>
+      <p>State the essential question driving your research. Not a thesis — a genuine question you are curious about. Something like: "Why are the companies building these tools in such a hurry to give them more autonomy? What does that urgency tell us about whose interests are really being served?" Find your own version.</p>
+      <span class="placeholder-hint">Suggested length: 1–3 sentences. Should feel like an honest intellectual question, not a rhetorical setup.</span>
+    </div>
+
+    <hr class="divider">
+
+    <!-- =============================================
+         SECTION 2: RESEARCH NARRATIVE
+         Mix of written content + placeholders for your responses
+         ============================================= -->
+    <div class="section-label reveal">Part Two — Research to Learn</div>
+    <h2 class="reveal">Going <em>Deeper</em></h2>
+
+    <p class="reveal">The research narrative below describes a process of following the question where it led — not searching for evidence to prove a point, but letting sources open into other sources, letting one question become five. The following is what I found, and what it taught me.</p>
+
+    <!-- THE ARCHITECTURE OF TRUST — written -->
+    <h3 class="reveal">The Architecture of Trust</h3>
+    <p class="reveal">When you grant an AI agent access to your inbox, you are doing something that has no real precedent in daily life. You are handing a non-human system the ability to speak in your name, to read communications meant only for you, to infer things about your relationships and your emotional state, and to take actions with real-world consequences — all at machine speed, without pause.</p>
+    <p class="reveal">The agent doesn't understand context the way a human assistant would. It doesn't know that the email from your father is different from the email from your landlord. It doesn't know when a "helpful" reply would damage a relationship, or when "streamlining" your schedule means missing something that mattered. It acts on patterns, probabilities, and goals — and the goals were set by someone else.</p>
+
+    <!-- WHO DESIGNED THE GOALS — written -->
+    <h3 class="reveal">Who Designed the Goals?</h3>
+    <p class="reveal">This is the question that tends to sit below the waterline. When Google's Workspace AI, Microsoft's Copilot, or Apple's AI features act as your agent, the "goals" they optimize for were designed by product teams at those companies. Those goals almost certainly include engagement, retention, data generation, and commercial alignment — alongside genuine helpfulness. This doesn't make these tools malicious. But it means the agent is not neutral.</p>
+    <p class="reveal">The data generated by an agentic AI — the pattern of how you work, when you communicate, what you prioritize, what causes you stress — is extraordinarily detailed. This isn't the data of what you search; it's the data of how you actually live. That data has value. To whom, and for what purposes, is a question most users have never been asked.</p>
+
+    <div class="pull-quote reveal">
+      "An agent given access to your digital life is not your employee — it is a system optimizing for outcomes that someone else defined, operating inside the most intimate space you have."
+    </div>
+
+    <!-- CONSENT PROBLEM — written -->
+    <h3 class="reveal">The Consent Problem</h3>
+    <p class="reveal">Most people who encounter agentic AI features do so through onboarding flows, feature announcements, or default settings. The consent they give is often procedural rather than meaningful — a terms-of-service agreement signed without reading, a toggle switched on by default. The concept of "informed consent" that governs medical and legal decisions has no real equivalent here.</p>
+    <p class="reveal">We are living inside systems whose scope and power we fundamentally don't understand, and we consented by clicking "Accept." This is not unique to AI — it describes much of the digital economy. But agentic AI represents a qualitative escalation, because the stakes of the agent's actions are not hypothetical. When an agent sends an email, books a flight, or surfaces information to your employer, it has done something real. The consequences arrive in your life.</p>
+
+    <div class="placeholder reveal">
+      <div class="placeholder-label">Your Research Detour — Write This Section</div>
+      <p>Describe a moment in your research where one source led you somewhere unexpected. What "rabbit hole" did you fall into? A specific article, a statistic, a concept that made you stop and rethink? Narrate the experience of discovering it — not just what it said, but how it changed your understanding. This should feel like thinking out loud, not summarizing.</p>
+      <span class="placeholder-hint">Suggested length: 150–250 words. First person. Be honest about confusion, surprise, or disagreement.</span>
+    </div>
+
+    <!-- LABOR AND DISTRIBUTION — written -->
+    <h3 class="reveal">The Distribution Problem</h3>
+    <p class="reveal">One question my research raised that I hadn't anticipated was the labor dimension. An AI agent that makes knowledge workers more productive may create enormous value at the top of the income distribution while accelerating displacement at the bottom. Someone who uses an AI agent to handle 40% of their work tasks becomes more valuable to their employer. Someone whose job <em>consisted</em> of those same 40% of tasks becomes redundant.</p>
+    <p class="reveal">This isn't deterministic — past waves of automation destroyed certain jobs and created others. But the pace and breadth of AI-driven automation may exceed the labor market's ability to adapt. The question "who wins, who loses" stops being theoretical very quickly when you look at the numbers.</p>
+
+    <div class="placeholder reveal">
+      <div class="placeholder-label">Your Counterargument Encounter — Write This Section</div>
+      <p>Describe a source or argument that pushed back on your thinking, or that you initially disagreed with. What was the strongest case in favor of agentic AI that you encountered? How did engaging with it change (or not change) your view? The assignment asks you to move beyond either/or thinking — show that here.</p>
+      <span class="placeholder-hint">Suggested length: 150–250 words. Engage honestly with the opposing view rather than dismissing it.</span>
+    </div>
+
+    <hr class="divider">
+
+    <!-- =============================================
+         SECTION 3: CONCLUSION — YOUR WRITING
+         ============================================= -->
+    <div id="conclusion" class="section-label reveal">Part Three — Realizations</div>
+    <h2 class="reveal">What I <em>Understand Now</em></h2>
+
+    <!-- Opening of conclusion — written -->
+    <p class="reveal">After spending time with this research, I don't think the problem with agentic AI is that it's secretly malicious. The companies building these tools are mostly trying to do what they say: reduce friction, increase productivity, make digital life less exhausting. The problem is structural. We have built an economy that rewards the extraction of attention and behavior data above almost anything else. Agentic AI is the next logical step in that economy — not a departure from it.</p>
+
+    <div class="placeholder reveal">
+      <div class="placeholder-label">Your Realization — Write This Section (Required for A/B grade)</div>
+      <p>What did this research teach you that you didn't know when you started? What shifted in your thinking? This is the "aha" moment the assignment is asking for — not a conclusion that proves your thesis, but a genuine intellectual landing point. What is this issue <em>really</em> about? What do you now understand about why the system exists?</p>
+      <span class="placeholder-hint">Suggested length: 200–300 words. First person. This is the emotional and intellectual core of the project — don't rush it.</span>
+    </div>
+
+    <!-- Stakes — written -->
+    <p class="reveal">The system perpetuates itself because the people it serves most directly — knowledge workers with technical fluency, corporate clients with purchasing power, investors seeking returns — benefit enough to overlook what it costs others. Those costs are paid by workers displaced by automation, by users who cannot meaningfully audit or contest what their agent does on their behalf, and by all of us who are slowly ceding authorship of our own daily lives to systems we cannot fully understand.</p>
+
+    <div class="placeholder reveal">
+      <div class="placeholder-label">The "We" Problem — Write This Section</div>
+      <p>Make the case for why this matters beyond you personally. Who else is affected? Why should your reader care? What is the broader exigency — the urgency — of this issue? You don't need to solve it, but you need to help the reader feel why it matters.</p>
+      <span class="placeholder-hint">Suggested length: 100–200 words. Think about your audience: people who may be using these tools right now without thinking about any of this.</span>
+    </div>
+
+    <!-- Close — written -->
+    <div class="pull-quote reveal">
+      "The next question isn't 'should we use these tools?' — we already are. It's: under what conditions, with what protections, and toward whose ends? Those are political and ethical questions, not technical ones. They require public conversation — not just product teams."
+    </div>
+
+    <div class="placeholder reveal">
+      <div class="placeholder-label">Closing / Next Questions — Write This Section</div>
+      <p>End with what you'd do next if you kept going. What questions does your research leave open? What would you want to investigate further — an interview subject, a dataset, a piece of legislation, a case study? This shows that you're not "solving" the problem, but advancing a conversation.</p>
+      <span class="placeholder-hint">Suggested length: 100–150 words. Can be a list of questions or a short paragraph.</span>
+    </div>
+
+  </div><!-- .content-wrap -->
+
+  <div class="content-wrap" style="padding-top:0;">
+    <div class="page-nav reveal">
+      <a href="index.html">← Home</a>
+      <a href="sources.html">Annotated Sources →</a>
+    </div>
+  </div>
+
+</div><!-- .page -->
+
+<footer>
+  <span>Always On — WCWP 10B Research Project · UCSD</span>
+  <span>Space: Digital Workspace &nbsp;·&nbsp; Problem: Agentic AI &amp; Autonomy</span>
+  <span>Academic · Non-commercial</span>
+</footer>
+
+<script>
+(function () {
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.08 }
+  );
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+})();
+(function () {
+  const current = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links a').forEach((a) => {
+    const href = a.getAttribute('href');
+    if (href === current || (current === '' && href === 'index.html')) {
+      a.classList.add('active');
+    }
+  });
+})();
+</script>
+</body>
+</html>
