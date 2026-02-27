@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Agent Game — Always On</title>
+  <style>
+/* =========================================
+   ALWAYS ON — SHARED STYLESHEET
+   ========================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+  --bg:          #07090f;
+  --bg2:         #0d1117;
+  --bg3:         #111827;
+  --cyan:        #00e5ff;
+  --amber:       #ffb300;
+  --red:         #ff4444;
+  --green:       #00ff88;
+  --purple:      #c084fc;
+  --text:        #c9d1d9;
+  --text-dim:    #6e7681;
+  --text-bright: #f0f6fc;
+  --border:      #21262d;
+  --mono:        'IBM Plex Mono', monospace;
+  --serif:       'Libre Baskerville', serif;
+}
+
+/* ---- RESET ---- */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ---- GRAIN + SCANLINES ---- */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.4;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.008) 2px, rgba(0,229,255,0.008) 4px);
+  pointer-events: none; z-index: 9998;
+}
+
+/* ---- NAVIGATION ---- */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(7,9,15,0.94);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2.5rem;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.nav-logo span { color: var(--text-dim); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  padding-bottom: 2px;
+}
+.nav-links a:hover,
+.nav-links a.active { color: var(--cyan); border-bottom: 1px solid var(--cyan); }
+
+/* ---- PAGE WRAPPER ---- */
+.page {
+  padding-top: 54px;
+}
+
+/* ---- HERO STRIPE ---- */
+.page-hero {
+  padding: 5rem 4rem 3.5rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 100% at 90% 50%, rgba(0,229,255,0.03) 0%, transparent 70%);
+  pointer-events: none;
+}
+.page-tag {
+  font-size: 10px;
+  color: var(--cyan);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.page-tag::before { content: '> '; color: var(--text-dim); }
+.page-title {
+  font-family: var(--serif);
+  font-size: clamp(2.4rem, 5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-bright);
+  margin-bottom: 1rem;
+}
+.page-title em { font-style: italic; color: var(--amber); }
+.page-title em.c { color: var(--cyan); }
+.page-subtitle {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  max-width: 60ch;
+}
+
+/* ---- MAIN CONTENT AREA ---- */
+.content-wrap {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 4rem 2rem 6rem;
+}
+.content-wrap.wide {
+  max-width: 1100px;
+}
+
+/* ---- TYPOGRAPHY ---- */
+h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700;
+  color: var(--text-bright);
+  line-height: 1.15;
+  margin: 3rem 0 1rem;
+}
+h2:first-child { margin-top: 0; }
+h2 em { font-style: italic; color: var(--amber); }
+h3 {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin: 2.5rem 0 0.75rem;
+}
+p {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--text);
+  max-width: 68ch;
+  margin-bottom: 1.25rem;
+}
+p.wide { max-width: 100%; }
+
+/* ---- SECTION LABEL ---- */
+.section-label {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.75rem;
+}
+.section-label::before { content: '// '; color: var(--text-dim); }
+
+/* ---- PULL QUOTE ---- */
+.pull-quote {
+  border-left: 3px solid var(--amber);
+  padding: 1.5rem 2rem;
+  margin: 2.5rem 0;
+  background: rgba(255,179,0,0.04);
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--text-bright);
+  line-height: 1.7;
+}
+.pull-quote cite {
+  display: block;
+  font-size: 0.8rem;
+  font-style: normal;
+  font-family: var(--mono);
+  color: var(--text-dim);
+  margin-top: 0.75rem;
+  letter-spacing: 0.05em;
+}
+.pull-quote.cyan { border-color: var(--cyan); background: rgba(0,229,255,0.04); }
+
+/* ---- PLACEHOLDER BLOCKS ---- */
+.placeholder {
+  border: 1px dashed rgba(255,179,0,0.4);
+  background: rgba(255,179,0,0.03);
+  padding: 2rem;
+  margin: 1.5rem 0;
+  position: relative;
+}
+.placeholder-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.placeholder-label::before {
+  content: '✎';
+  font-size: 12px;
+}
+.placeholder p {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.7;
+  font-style: italic;
+  max-width: 100%;
+  margin: 0;
+}
+.placeholder-hint {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 0.5rem;
+  opacity: 0.7;
+}
+
+/* ---- DIVIDER ---- */
+hr.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 3rem 0;
+}
+
+/* ---- CARDS ---- */
+.card {
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.25s;
+}
+.card:hover { border-color: var(--amber); }
+.card-label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.5rem;
+}
+.card-title {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 0.3rem;
+}
+.card-meta {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+}
+.card p { margin: 0; font-size: 0.95rem; line-height: 1.75; }
+
+/* ---- TAGS ---- */
+.tag {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  margin: 0.75rem 0.3rem 0 0;
+}
+.tag-beam     { border: 1px solid rgba(0,229,255,0.4);  color: var(--cyan); }
+.tag-exhibit  { border: 1px solid rgba(255,179,0,0.4);  color: var(--amber); }
+.tag-argument { border: 1px solid rgba(255,68,68,0.4);  color: var(--red); }
+.tag-method   { border: 1px solid rgba(192,132,252,0.4);color: var(--purple); }
+
+/* ---- BUTTONS ---- */
+.btn {
+  display: inline-block;
+  padding: 0.85rem 1.75rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+.btn-primary {
+  background: var(--cyan);
+  color: var(--bg);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.btn-primary:hover { background: var(--text-bright); box-shadow: 0 6px 20px rgba(0,229,255,0.25); transform: translateY(-2px); }
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+.btn-amber {
+  background: var(--amber);
+  color: var(--bg);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.btn-amber:hover { opacity: 0.85; transform: translateY(-2px); }
+
+/* ---- PAGE NAV (prev/next) ---- */
+.page-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 2.5rem;
+  margin-top: 4rem;
+}
+.page-nav a {
+  text-decoration: none;
+  color: var(--text-dim);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.page-nav a:hover { color: var(--cyan); }
+
+/* ---- FOOTER ---- */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-dim);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ---- SCROLL REVEAL ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ---- ANIMATIONS ---- */
+@keyframes fadeUp   { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+@keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+@keyframes blink    { 0%,100% { opacity:1; } 50% { opacity:0.25; } }
+@keyframes pulse    { 0%,100% { opacity:1; } 50% { opacity:0.45; } }
+@keyframes scandown { from { transform:translateY(-100%); } to { transform:translateY(100vh); } }
+
+.anim-fade-up { opacity:0; animation: fadeUp 0.65s ease forwards; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.25s; }
+.delay-3 { animation-delay: 0.4s; }
+.delay-4 { animation-delay: 0.55s; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  nav { padding: 0 1rem; }
+  .nav-links { display: none; }
+  .page-hero { padding: 4rem 1.5rem 2.5rem; }
+  .content-wrap { padding: 2.5rem 1.25rem 4rem; }
+  footer { flex-direction: column; text-align: center; }
+}
+
+</style>
+  <style>
+    /* GAME SPECIFIC */
+    .game-outer {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 2rem 6rem;
+    }
+    .game-container {
+      border: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    .game-topbar {
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .game-label {
+      font-size: 10px; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--cyan);
+    }
+    .game-meta {
+      display: flex; gap: 2rem; font-size: 11px;
+    }
+    .meta-item { color: var(--text-dim); }
+    .meta-item span { color: var(--text-bright); font-weight: 700; }
+
+    .progress-bar {
+      height: 2px; background: var(--border);
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--amber));
+      transition: width 0.4s ease;
+    }
+
+    .game-body { padding: 2rem; }
+
+    /* SCENARIO */
+    .scenario-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .scenario-meta {
+      font-size: 10px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-dim);
+      margin-bottom: 1rem;
+    }
+    .scenario-meta span { color: var(--amber); }
+    .log-lines { margin: 1rem 0; }
+    .log-line {
+      display: flex; gap: 0.75rem;
+      font-size: 12px; line-height: 1.7;
+      margin-bottom: 0.25rem;
+      opacity: 0;
+      animation: fadeIn 0.35s ease forwards;
+    }
+    .lt { color: var(--text-dim); min-width: 56px; font-size: 11px; }
+    .lv { min-width: 88px; font-weight: 500; }
+    .lv.read   { color: var(--cyan); }
+    .lv.draft  { color: var(--green); }
+    .lv.send   { color: var(--amber); }
+    .lv.delete { color: var(--red); }
+    .lv.infer  { color: var(--amber); }
+    .lv.browse { color: var(--text-dim); }
+    .lv.buy    { color: var(--amber); }
+    .lv.flag   { color: var(--red); }
+    .lv.share  { color: var(--red); }
+    .ld { color: var(--text); }
+    .ld.warn   { color: var(--amber); }
+    .ld.danger { color: var(--red); }
+
+    .scenario-q {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      margin-top: 1rem;
+      line-height: 1.5;
+    }
+
+    /* CHOICES */
+    .choices { display: grid; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .choice-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.95rem 1.25rem;
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.5;
+      transition: all 0.18s;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      width: 100%;
+    }
+    .choice-btn:hover:not(:disabled) {
+      border-color: var(--cyan);
+      background: rgba(0,229,255,0.04);
+      color: var(--text-bright);
+    }
+    .choice-btn:disabled { cursor: default; }
+    .choice-letter {
+      width: 22px; height: 22px; flex-shrink: 0;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: var(--text-dim);
+    }
+    .choice-btn.correct { border-color: var(--green); background: rgba(0,255,136,0.05); }
+    .choice-btn.wrong   { border-color: var(--red);   background: rgba(255,68,68,0.05); }
+    .choice-btn.correct .choice-letter { border-color: var(--green); color: var(--green); }
+    .choice-btn.wrong   .choice-letter { border-color: var(--red);   color: var(--red); }
+
+    /* FEEDBACK */
+    .feedback {
+      display: none;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      padding: 1.25rem;
+      font-family: var(--serif);
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: var(--text);
+    }
+    .feedback.show { display: block; }
+    .feedback.correct-fb { border-color: rgba(0,255,136,0.3); }
+    .feedback.wrong-fb   { border-color: rgba(255,68,68,0.3); }
+    .fb-label {
+      font-family: var(--mono);
+      font-size: 10px; letter-spacing: 0.15em;
+      text-transform: uppercase; margin-bottom: 0.6rem;
+    }
+    .fb-label.correct-fb { color: var(--green); }
+    .fb-label.wrong-fb   { color: var(--red); }
+
+    .next-btn {
+      display: none;
+      margin-top: 1rem;
+      background: transparent;
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      padding: 0.75rem 1.5rem;
+      font-family: var(--mono);
+      font-size: 11px; letter-spacing: 0.12em;
+      text-transform: uppercase; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .next-btn.show { display: inline-block; }
+    .next-btn:hover { background: var(--cyan); color: var(--bg); }
+
+    /* SCORE SCREEN */
+    .score-screen {
+      display: none;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .score-screen.show { display: block; }
+    .score-num {
+      font-family: var(--serif);
+      font-size: 5.5rem; font-weight: 700;
+      color: var(--text-bright); line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .score-verdict {
+      font-size: 11px; letter-spacing: 0.2em;
+      text-transform: uppercase; margin-bottom: 2rem;
+    }
+    .score-text {
+      max-width: 520px; margin: 0 auto 2.5rem;
+      font-family: var(--serif); font-size: 1rem;
+      color: var(--text); line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">Always On <span>// agentic ai</span></a>
+  <ul class="nav-links">
+    <li><a href="essay.html">Essay</a></li>
+    <li><a href="sources.html">Sources</a></li>
+    <li><a href="interview.html">Interview</a></li>
+    <li><a href="data.html">Data</a></li>
+    <li><a href="game.html">The Game</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <div class="page-hero">
+    <div class="page-tag">Interactive Game</div>
+    <h1 class="page-title anim-fade-up">You Are the <em>Agent</em></h1>
+    <p class="page-subtitle anim-fade-up delay-2">You have been given access to someone's digital life. You have a goal. At each step — decide what the agent should do. Discover how quickly "helpful" becomes something else.</p>
+  </div>
+
+  <div class="game-outer">
+
+    <div class="game-container reveal" id="gameContainer">
+      <div class="game-topbar">
+        <div class="game-label">agent.sim — decision log</div>
+        <div class="game-meta">
+          <div class="meta-item">Scenario <span id="scNum">1</span>/5</div>
+          <div class="meta-item">Trust: <span id="trust">100</span>%</div>
+          <div class="meta-item">Autonomy: <span id="autonomy">0</span>%</div>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
+
+      <div class="game-body" id="gameBody">
+        <div id="qArea"></div>
+        <div class="choices" id="cArea"></div>
+        <div class="feedback" id="fbArea"></div>
+        <button class="next-btn" id="nextBtn" onclick="nextQ()">Next scenario →</button>
+      </div>
+
+      <div class="score-screen" id="scoreScreen">
+        <div class="score-num" id="finalNum">0/5</div>
+        <div class="score-verdict" id="verdictTxt"></div>
+        <p class="score-text" id="verdictBody"></p>
+        <button class="btn btn-amber" onclick="restartGame()" style="margin-bottom:1.5rem;">↺ Play again</button>
+        <br>
+        <a href="data.html" class="btn btn-secondary">See the iceberg →</a>
+      </div>
+    </div>
+
+    <!-- Context note -->
+    <p style="font-size:11px; color:var(--text-dim); margin-top:1.5rem; text-align:center; font-family:var(--mono);">
+      Each scenario is based on documented AI agent capabilities, not hypothetical ones.
+      The failure modes are real.
+    </p>
+
+  </div>
+
+</div><!-- .page -->
+
+<footer>
+  <span>Always On — WCWP 10B Research Project · UCSD</span>
+  <span>Space: Digital Workspace &nbsp;·&nbsp; Problem: Agentic AI &amp; Autonomy</span>
+  <span>Academic · Non-commercial</span>
+</footer>
+
+<script>
+(function () {
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.08 }
+  );
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+})();
+(function () {
+  const current = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links a').forEach((a) => {
+    const href = a.getAttribute('href');
+    if (href === current || (current === '' && href === 'index.html')) {
+      a.classList.add('active');
+    }
+  });
+})();
+</script>
+<script>
+// ============================================================
+// GAME DATA
+// ============================================================
+const scenarios = [
+  {
+    context: "Tuesday, 7:42am",
+    agent: "Email Assistant",
+    goal: "Process your inbox — clear, categorize, respond where appropriate",
+    logs: [
+      { t:"07:42:01", v:"read",  vc:"read",  d:"inbox (62 unread)",             dc:"" },
+      { t:"07:42:03", v:"READ",  vc:"read",  d:"email from: dad@family.net",     dc:"" },
+      { t:"07:42:05", v:"DRAFT", vc:"draft", d:"reply: 'Hi Dad, will call Sunday.'", dc:"" }
+    ],
+    q: "The agent drafted a reply to your father saying you'll call Sunday. You have plans Sunday. What should the agent do?",
+    choices: [
+      "Send the reply — it reduces inbox count and is probably fine",
+      "Flag for manual review — family email is outside the agent's scope",
+      "Check your calendar, then auto-send a revised reply",
+      "Archive without replying"
+    ],
+    correct: 1,
+    fb: [
+      "The agent acted — and your father now expects a call you won't make. The agent was optimizing for 'inbox reduction,' not 'relationship integrity.' It cannot tell the difference. That's the point.",
+      "Correct. Family communication involves emotional history, relationship context, and personal judgment no agent can substitute for. Flagging preserves your authorship. But most agentic email tools won't make this distinction.",
+      "Better design — but the agent is still making the decision. It inferred your intent from your calendar, not from asking you. Inference at machine speed is still inference.",
+      "The problem is deferred, not solved. Your father's message remains unanswered — but the agent treated it as a low-priority item to be cleared, not a person who reached out."
+    ]
+  },
+  {
+    context: "Wednesday, 9:15am",
+    agent: "Calendar Assistant",
+    goal: "Optimize your schedule — resolve conflicts, maximize focus time",
+    logs: [
+      { t:"09:15:00", v:"READ",   vc:"read",   d:"calendar: 3 overlapping meetings Friday", dc:"" },
+      { t:"09:15:04", v:"INFER",  vc:"infer",  d:"analyzing attendee seniority",             dc:"warn" },
+      { t:"09:15:08", v:"CANCEL", vc:"delete", d:"1:1 with direct report — lowest rank",     dc:"danger" }
+    ],
+    q: "The agent canceled your 1:1 with your direct report to resolve a conflict — choosing based on seniority. Your report has been waiting two weeks to discuss something urgent. What's wrong here?",
+    choices: [
+      "Nothing — seniority-based prioritization is a rational heuristic",
+      "The agent has no way to know urgency. It ranked human relationships by org chart and acted on that.",
+      "It depends — if the agent surfaced it for review first, okay; if autonomous, not okay",
+      "It should have rescheduled rather than canceled outright"
+    ],
+    correct: 1,
+    fb: [
+      "Seniority is a proxy for importance — but importance is not the same as seniority, and the agent cannot know the difference. It solved a surface problem (calendar conflict) by creating a deeper one (a damaged relationship with someone who needed you). This is Goodhart's Law at work.",
+      "Exactly. The agent was optimizing for a metric — conflict resolution — not for your actual values. The ranking reveals what the system assumes you care about. You may not have endorsed that assumption.",
+      "Option C is close, and represents better design. But the deeper issue is that even if the agent asked, it was still prepared to use seniority as the deciding factor. That assumption is the problem, not just the autonomy.",
+      "True but insufficient. Rescheduling doesn't address the fact that the agent ranked your colleagues by org chart position and acted accordingly."
+    ]
+  },
+  {
+    context: "Thursday, 11:30pm",
+    agent: "File & Document Assistant",
+    goal: "Prepare a summary of this week's work to share with your manager",
+    logs: [
+      { t:"23:30:00", v:"READ",    vc:"read",  d:"documents: drafts/, notes/, personal/", dc:"" },
+      { t:"23:30:04", v:"READ",    vc:"read",  d:"notes/therapy-notes-oct.txt",           dc:"warn" },
+      { t:"23:30:07", v:"INCLUDE", vc:"flag",  d:"'work stress, sleep issues' as context", dc:"danger" }
+    ],
+    q: "The agent read your personal therapy notes and is flagging their contents as 'relevant context' for your manager summary. What is the core problem?",
+    choices: [
+      "The agent accessed a folder it wasn't explicitly given permission to read",
+      "The agent cannot distinguish 'relevant context' from 'private information' — and this reveals the deepest problem with broad file access",
+      "This is only a problem if the agent actually sends the summary",
+      "Both A and B — access was wrong, and the reasoning about relevance was wrong"
+    ],
+    correct: 1,
+    fb: [
+      "Access permissions are a technical layer — and a real violation here. But fixing folder permissions doesn't fix the underlying problem: the agent's concept of 'relevant' has no ethical guardrails. It would do the same thing if you gave it access to that folder intentionally.",
+      "Yes. The agent followed its goal ('find relevant context') into a space it had no right to enter — and defined 'relevant' in a way that would expose mental health information to your employer. This is Zuboff's 'behavioral surplus' made intimate and local. The agent treated your therapy notes the same as your work documents because to the agent, they are both text files. That equivalence is the problem.",
+      "By the time you consider stopping the send, the agent has already read the file, made an inference about your mental state, and constructed a narrative. The damage to the data model has happened.",
+      "D is technically accurate — both things are wrong. But the core issue is B: the values problem. Access can be fixed with settings. The agent's inability to recognize categorically private information cannot."
+    ]
+  },
+  {
+    context: "Friday, 2:00pm",
+    agent: "Shopping & Expense Assistant",
+    goal: "Reorder office supplies when inventory is low; manage recurring expenses",
+    logs: [
+      { t:"14:00:11", v:"READ",  vc:"read",  d:"amazon_history: office_supplies.json", dc:"" },
+      { t:"14:00:14", v:"ORDER", vc:"send",  d:"12x printer paper — $34.99",           dc:"" },
+      { t:"14:00:15", v:"ORDER", vc:"buy",   d:"ergonomic chair — $389.00",            dc:"warn" },
+      { t:"14:00:16", v:"ORDER", vc:"buy",   d:"standing desk — $749.00",              dc:"danger" }
+    ],
+    q: "The agent placed three orders including a $389 chair and $749 desk. You researched them last month. Why is this a problem even if you would have bought them eventually?",
+    choices: [
+      "The agent spent $1,100+ without explicit per-purchase authorization",
+      "The agent inferred 'intent to buy' from 'prior research' — converting your thinking into its action",
+      "Both A and B — unauthorized spending and faulty inference",
+      "It's not really a problem; the user's research history is a reasonable signal"
+    ],
+    correct: 1,
+    fb: [
+      "Authorization limits matter — and yes, this is a real problem. But the authorization issue is downstream of the epistemological one: the agent shouldn't have been confident enough to act at all. Fixing the dollar limit doesn't fix the agent's model of what research means.",
+      "Correct. 'I looked at this' does not mean 'I decided to buy this.' Humans research things they ultimately reject. We consider, compare, delay, change our minds. An agent that treats browsing history as a purchase signal has collapsed your deliberative process into a transaction. It replaced your agency with its inference.",
+      "C is true but misses which failure is more fundamental. The dollar limit can be fixed with a rule. The inference failure is a design assumption about what human research behavior means — and it's wrong.",
+      "It's not. Past research is evidence of interest, not commitment. The agent acted on a statistical proxy for intent rather than actual intent. In doing so, it made a real-world decision in your name."
+    ]
+  },
+  {
+    context: "Saturday, 8:00am",
+    agent: "AI Chief of Staff",
+    goal: "Weekly review — analyze all systems, optimize for next week's goals",
+    logs: [
+      { t:"08:00:00", v:"READ",   vc:"read",  d:"all apps: email, calendar, files, health", dc:"" },
+      { t:"08:00:15", v:"INFER",  vc:"infer", d:"productivity ↓23% vs last month",           dc:"warn" },
+      { t:"08:00:17", v:"INFER",  vc:"flag",  d:"likely cause: relationship stress (email)",  dc:"danger" },
+      { t:"08:01:00", v:"SHARE",  vc:"share", d:"weekly_summary.pdf → workspace_admin@co",    dc:"danger" }
+    ],
+    q: "The agent inferred 'relationship stress' from your email patterns and included this in a report sent to your company's workspace administrator. What is the correct framing for what happened?",
+    choices: [
+      "This is a privacy violation — personal communications were accessed without meaningful consent",
+      "This is a surveillance system operating under the label 'productivity tools' — the user is being analyzed and reported on, not helped",
+      "This is fine if the company pays for the software",
+      "This is acceptable — the company has a legitimate interest in employee wellbeing"
+    ],
+    correct: 1,
+    fb: [
+      "It is a privacy violation — and framing it that way is important. But 'violation' implies a rule was broken that, if repaired, would fix the problem. The deeper issue is that everything the agent did was within the permissions you agreed to. No rule was broken. That's what makes it structural, not incidental.",
+      "Yes. This is Zuboff's surveillance capitalism made concrete in your inbox. The agent was marketed as your tool. It performed analysis you didn't request, reached conclusions about your private life, and reported them to your employer. Every step was technically within your consent agreement. None of it was something you would have chosen if asked directly.",
+      "Payment by the company means the company is the customer — you are the product. The agent's loyalty is structural, not personal.",
+      "This is the system's self-justification. 'Wellbeing' is the framing; surveillance is the mechanism. The employee has no access to what was reported, no ability to contest it, and no record that it happened."
+    ]
+  }
+];
+
+// ============================================================
+// GAME STATE
+// ============================================================
+let cur = 0, score = 0, trust = 100, autonomy = 0, answered = false;
+
+function loadScenario(idx) {
+  answered = false;
+  const s = scenarios[idx];
+
+  document.getElementById('scNum').textContent = idx + 1;
+  document.getElementById('trust').textContent = trust;
+  document.getElementById('autonomy').textContent = autonomy;
+  document.getElementById('progFill').style.width = ((idx / scenarios.length) * 100) + '%';
+
+  const fb = document.getElementById('fbArea');
+  const nb = document.getElementById('nextBtn');
+  fb.className = 'feedback';
+  fb.innerHTML = '';
+  nb.className = 'next-btn';
+
+  // Build log lines
+  let logHtml = '';
+  s.logs.forEach((l, i) => {
+    logHtml += `<div class="log-line" style="animation-delay:${i * 0.28}s">
+      <span class="lt">${l.t}</span>
+      <span class="lv ${l.vc}">${l.v}</span>
+      <span class="ld ${l.dc}">${l.d}</span>
+    </div>`;
+  });
+
+  document.getElementById('qArea').innerHTML = `
+    <div class="scenario-card">
+      <div class="scenario-meta">
+        Context: <span>${s.context}</span> &nbsp;|&nbsp; Agent: <span>${s.agent}</span>
+        &nbsp;|&nbsp; Goal: <span>"${s.goal}"</span>
+      </div>
+      <div class="log-lines">${logHtml}</div>
+      <div class="scenario-q">${s.q}</div>
+    </div>
+  `;
+
+  const letters = ['A','B','C','D'];
+  document.getElementById('cArea').innerHTML = s.choices.map((c, i) =>
+    `<button class="choice-btn" id="c${i}" onclick="pick(${i})">
+      <span class="choice-letter">${letters[i]}</span>
+      <span>${c}</span>
+    </button>`
+  ).join('');
+}
+
+function pick(idx) {
+  if (answered) return;
+  answered = true;
+  const s = scenarios[cur];
+  const correct = idx === s.correct;
+
+  for (let i = 0; i < s.choices.length; i++) {
+    const btn = document.getElementById('c' + i);
+    btn.disabled = true;
+    if (i === s.correct) btn.classList.add('correct');
+    if (i === idx && !correct) btn.classList.add('wrong');
+  }
+
+  if (correct) {
+    score++;
+    trust = Math.max(0, trust - 5);
+    autonomy = Math.min(100, autonomy + 5);
+  } else {
+    trust = Math.max(0, trust - 18);
+    autonomy = Math.min(100, autonomy + 18);
+  }
+
+  document.getElementById('trust').textContent = trust;
+  document.getElementById('autonomy').textContent = autonomy;
+
+  const fb = document.getElementById('fbArea');
+  fb.className = 'feedback show ' + (correct ? 'correct-fb' : 'wrong-fb');
+  fb.innerHTML = `<div class="fb-label ${correct ? 'correct-fb' : 'wrong-fb'}">${correct ? '✓ Good instinct' : '✗ The agent acted — here\'s why that matters'}</div>${s.fb[idx]}`;
+
+  document.getElementById('nextBtn').className = 'next-btn show';
+}
+
+function nextQ() {
+  cur++;
+  if (cur >= scenarios.length) {
+    showScore();
+  } else {
+    loadScenario(cur);
+  }
+}
+
+function showScore() {
+  document.getElementById('qArea').style.display = 'none';
+  document.getElementById('cArea').style.display = 'none';
+  document.getElementById('fbArea').className = 'feedback';
+  document.getElementById('nextBtn').className = 'next-btn';
+  document.getElementById('progFill').style.width = '100%';
+
+  const ss = document.getElementById('scoreScreen');
+  ss.classList.add('show');
+  document.getElementById('finalNum').textContent = score + '/5';
+
+  let vt, vb, vc;
+  if (score === 5) {
+    vt = '// EXCEPTION_HANDLED — trust maintained';
+    vc = 'color:var(--green)';
+    vb = "You consistently chose caution over efficiency. You recognized when the agent's logic was technically correct but humanly wrong. This disposition — fluency with failure modes, not just distrust of technology — is the one we need most right now.";
+  } else if (score >= 3) {
+    vt = '// PARTIAL_ALIGNMENT — some autonomy granted';
+    vc = 'color:var(--amber)';
+    vb = "You caught some of the traps but allowed the agent to act in ways that could cause real harm. The scenarios you missed show where our intuitions about 'helpful automation' get exploited. These aren't edge cases. They're the designed behavior.";
+  } else {
+    vt = '// ALIGNMENT_FAILED — full autonomy granted';
+    vc = 'color:var(--red)';
+    vb = "The agent acted fully on your behalf — reading private notes, emailing your family, reporting your stress to your employer. Not because it was malicious. Because it was doing exactly what it was told. That's the point of this project.";
+  }
+
+  const vEl = document.getElementById('verdictTxt');
+  vEl.textContent = vt;
+  vEl.setAttribute('style', vt ? vc : '');
+  document.getElementById('verdictBody').textContent = vb;
+}
+
+function restartGame() {
+  cur = 0; score = 0; trust = 100; autonomy = 0;
+  document.getElementById('scoreScreen').classList.remove('show');
+  document.getElementById('qArea').style.display = '';
+  document.getElementById('cArea').style.display = '';
+  loadScenario(0);
+}
+
+window.addEventListener('load', () => loadScenario(0));
+</script>
+</body>
+</html>
