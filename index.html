@@ -529,6 +529,91 @@ footer {
       letter-spacing: 0.1em;
     }
 
+    /* WHAT IS AGENTIC AI */
+    .what-is-section {
+      padding: 5rem 4rem;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .what-is-section h2 {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      color: var(--text-bright);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .what-is-section h2 em { font-style: italic; color: var(--cyan); }
+    .what-is-section p {
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.85;
+      max-width: 65ch;
+      margin-bottom: 1.25rem;
+    }
+    .what-is-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0;
+      margin: 2.5rem 0 0;
+      align-items: stretch;
+    }
+    .wi-card {
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      padding: 1.75rem;
+    }
+    .wi-card--agent {
+      border-color: rgba(0,229,255,0.3);
+      background: rgba(0,229,255,0.03);
+    }
+    .wi-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+    }
+    .wi-card--agent .wi-label { color: var(--cyan); }
+    .wi-example {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--amber);
+      margin-bottom: 1rem;
+      padding: 0.6rem 0.85rem;
+      background: rgba(255,179,0,0.06);
+      border-left: 2px solid var(--amber);
+    }
+    .wi-result {
+      font-family: var(--serif);
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .wi-card--agent .wi-result { color: var(--text-bright); }
+    .wi-vs {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 1.25rem;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .wi-footer {
+      margin-top: 2rem !important;
+      color: var(--text) !important;
+    }
+    .wi-footer em { font-style: italic; color: var(--cyan); }
+
     /* ARGUMENT STRIP */
     .argument-strip {
       padding: 5rem 4rem;
@@ -541,6 +626,9 @@ footer {
     @media (max-width: 900px) {
       .agent-log { display: none; }
       #hero { padding: 7rem 1.5rem 4rem; }
+      .what-is-section { padding: 3rem 1.5rem; }
+      .what-is-grid { grid-template-columns: 1fr; }
+      .wi-vs { padding: 1rem; border: none; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
       .feature-grid { grid-template-columns: 1fr; }
       .argument-strip { padding: 3rem 1.5rem; }
     }
@@ -590,6 +678,28 @@ footer {
       <div class="log-row"><span class="log-t">08:02:27</span><span class="log-v v-share">SHARE</span><span class="log-d danger">flagged_report.pdf → ?</span></div>
     </div>
   </section>
+
+  <!-- WHAT IS AGENTIC AI -->
+  <div class="what-is-section reveal">
+    <div class="section-label">What is Agentic AI?</div>
+    <h2>Not a chatbot.<br><em>An actor.</em></h2>
+    <p>Most people's mental model of AI is a chatbot — you type something, it responds. You're always in the loop. Nothing happens unless you ask.</p>
+    <p>Agentic AI is different. An <em>agent</em> is given a goal and a set of tools — access to your email, your calendar, your browser, your files — and it pursues that goal on its own. It doesn't wait to be asked. It reads, decides, and acts. Then it reads again.</p>
+    <div class="what-is-grid">
+      <div class="wi-card">
+        <div class="wi-label">Traditional AI</div>
+        <div class="wi-example">"Summarize this email."</div>
+        <div class="wi-result">→ Returns a summary. Stops. Waits for your next instruction.</div>
+      </div>
+      <div class="wi-vs">vs.</div>
+      <div class="wi-card wi-card--agent">
+        <div class="wi-label">Agentic AI</div>
+        <div class="wi-example">"Manage my inbox."</div>
+        <div class="wi-result">→ Reads all email. Drafts replies. Sends some. Schedules follow-ups. Flags your therapy notes as "relevant context." Sends a summary to your manager. Does this every morning while you sleep.</div>
+      </div>
+    </div>
+    <p class="wi-footer">Tools like Google Gemini in Workspace, Microsoft Copilot, and Apple Intelligence already work this way — or are being built to. The question isn't whether agentic AI is coming. <em>It's already here.</em> The question is what it means to live inside a space that has an agent running in it.</p>
+  </div>
 
   <!-- ARGUMENT STRIP -->
   <div class="argument-strip reveal">
@@ -645,4 +755,27 @@ footer {
 
 <footer>
   <span>Always On — WCWP 10B Research Project · UCSD</span>
-  <span>Space: Digital Workspace &nbsp;·&nbsp; Problem: Agentic AI &amp; Au
+  <span>Space: Digital Workspace &nbsp;·&nbsp; Problem: Agentic AI &amp; Autonomy</span>
+  <span>Academic · Non-commercial</span>
+</footer>
+
+<script>
+(function () {
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.08 }
+  );
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+})();
+(function () {
+  const current = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links a').forEach((a) => {
+    const href = a.getAttribute('href');
+    if (href === current || (current === '' && href === 'index.html')) {
+      a.classList.add('active');
+    }
+  });
+})();
+</script>
+</body>
+</html>
