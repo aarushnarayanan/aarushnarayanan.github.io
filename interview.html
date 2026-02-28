@@ -508,108 +508,93 @@ footer {
     <div class="section-label reveal">Before the Interview</div>
 
     <div class="placeholder reveal">
-      <div class="placeholder-label">Why You Chose This Subject — Write This Section</div>
-      <p>Who did you interview and why? What made them the right person to talk to about agentic AI? What did you hope they could tell you that the research couldn't? How did you find them — a professor, a professional contact, someone in your network?</p>
-      <span class="placeholder-hint">Suggested length: 100–150 words. Set the scene before the conversation begins.</span>
+      <div class="placeholder-label">Why Interview This Person?</div>
+      <p>For this interview, I chose to go with a senior developer at SAP Labs who's been working there for 20 years. I chose them because SAP Labs is a company focusing on enterprise AI, meaning using AI (and in this case agentic) for businesses.</p>
+      <span class="placeholder-hint">For the sake of the interviewee's privacy, their name will not be mentioned. </span>
     </div>
 
     <!-- SUBJECT CARD -->
     <div class="subject-card reveal">
       <div class="subject-avatar">👤</div>
       <div>
-        <div class="subject-name">[Interviewee Name or Pseudonym]</div>
-        <div class="subject-role">[Role / Title / Relevant Background]</div>
-        <div class="subject-why">Replace this with a 1–2 sentence description of why this person was the right subject — their connection to agentic AI, their professional or lived experience with it.</div>
+        <div class="subject-name">SAP (Real Name Will Not Be Used for Privacy Sake)</div>
+        <div class="subject-role">SAP Senior Developer</div>
+        <div class="subject-why">I chose a senior developer at SAP Labs because they focus on enterprise AI and they are a much older company that isn't as involved in tech culture, meaning I could get an unbiased perspective on Agentic AI that isn't automatically pro-AI, which is a very common viewpoint in modern tech companies like Google and Meta.</div>
       </div>
     </div>
 
     <!-- INTERVIEW TRANSCRIPT -->
     <div class="section-label reveal">The Conversation</div>
-    <p class="reveal" style="margin-bottom:2rem;">Conducted [date] · [format: in-person / video call / written] · Approx. [X] minutes</p>
+    <p class="reveal" style="margin-bottom:2rem;">Conducted [Feburary 24, 2026] · [Format: Video Call] · Approx. [55] minutes</p>
 
     <div class="interview-block reveal">
 
       <!-- Q1 -->
       <div class="interview-q">
         <span class="interview-speaker speaker-you">You</span>
-        <div class="interview-text placeholder-text">[Your first question — replace with the actual question you asked]</div>
+        <div class="interview-text placeholder-text">So just to start, does agentic AI actually have too much control right now in your opinion? </div>
       </div>
       <div class="interview-q">
         <span class="interview-speaker speaker-them">Them</span>
-        <div class="interview-text placeholder-text">[Their answer — transcribe or paraphrase their response here. If paraphrased, note that in your reflection below.]</div>
+        <div class="interview-text placeholder-text">Yeah. In a lot of deployments, honestly, yes. And I say that as someone who's building this stuff. The systems we're creating can make hundreds of decisions an hour, financial decisions, operational decisions, usually with very little human involvement. That's the whole pitch. But just because we can remove humans from the loop doesn't mean we always should. I think the industry moved faster than the safeguards did.</div>
       </div>
 
       <!-- Q2 -->
       <div class="interview-q">
         <span class="interview-speaker speaker-you">You</span>
-        <div class="interview-text placeholder-text">[Your second question]</div>
+        <div class="interview-text placeholder-text">What's an example of it going wrong because of that?</div>
       </div>
       <div class="interview-q">
         <span class="interview-speaker speaker-them">Them</span>
-        <div class="interview-text placeholder-text">[Their answer]</div>
+        <div class="interview-text placeholder-text">I can't name clients obviously, but we've seen situations where an agent is given a goal, like clearing a backlog of invoices, and it just does it, pretty efficently too. But some of those invoices had flags on them that a human would have noticed. The agent didn't care, it had a goal and it hit the goal. Everything was technically correct and the outcome was still a mess. That's the thing people don't get, these systems don't second-guess themselves, they just do it and think they're in the right. </div>
       </div>
 
       <!-- Q3 -->
       <div class="interview-q">
         <span class="interview-speaker speaker-you">You</span>
-        <div class="interview-text placeholder-text">[Your third question — consider asking something that went deeper than what you'd read. Something the literature couldn't answer.]</div>
+        <div class="interview-text placeholder-text">Right now its a lot of businesses using it for efficency, but regular people are starting to use agentic AI too. Like AI that books appointments, answers emails, manages files. Is that just as risky?</div>
       </div>
       <div class="interview-q">
         <span class="interview-speaker speaker-them">Them</span>
-        <div class="interview-text placeholder-text">[Their answer]</div>
+        <div class="interview-text placeholder-text">It's a different kind of risky. In enterprise there's at least theoretically someone responsible, like a compliance team or an IT department. When it's just a person who downloaded an app and said "sure, manage my calendar and inbox," there's no one to fix or manage that. And these tools ask for a lot of permissions upfront. Access to your email, your contacts, files. Most people click through that without really thinking about what they just handed over. Obviously the agent needs those permissions to do what it does, but it also means if something goes wrong, or if the company behind it has bad data practices, your information is very exposed.</div>
       </div>
 
       <!-- Q4 -->
       <div class="interview-q">
         <span class="interview-speaker speaker-you">You</span>
-        <div class="interview-text placeholder-text">[Your fourth question]</div>
+        <div class="interview-text placeholder-text">What kind of data are we actually talking about? Like what does it see?</div>
       </div>
       <div class="interview-q">
         <span class="interview-speaker speaker-them">Them</span>
-        <div class="interview-text placeholder-text">[Their answer]</div>
+        <div class="interview-text placeholder-text">More than people realize. Like if an agent is managing your email it's reading everything, not just the thread you pointed it to. It needs context. So it might be seeing your medical appointment confirmations, your financial statements coming in, personal conversations. Same with a scheduling agent that has calendar access. It can infer a lot about your life just from patterns. Where you are, who you meet with, what you do on weekends. None of that feels like "data" when you're just trying to get help scheduling a dentist appointment. But it is data, and it's being processed somewhere.</div>
       </div>
 
       <!-- Q5 -->
       <div class="interview-q">
         <span class="interview-speaker speaker-you">You</span>
-        <div class="interview-text placeholder-text">[Your fifth question — consider ending with something open: "What do you think most people misunderstand about this?" or "What question should I be asking that I haven't?"]</div>
+        <div class="interview-text placeholder-text">Do you think most people using these tools day to day even know this stuff?</div>
       </div>
       <div class="interview-q">
         <span class="interview-speaker speaker-them">Them</span>
-        <div class="interview-text placeholder-text">[Their answer]</div>
+        <div class="interview-text placeholder-text">No. And I don't say that to be condescending, I say it because the products are deliberately designed to feel simple and trustworthy. The whole philosophy is "just tell it what you want." The ease behind it is the product, there's no challenge. But we really forget challenge sometimes exists for a reason. When you had to manually do something, you were also manually reviewing it, you know your own actions best and the context behind them. Those moments where you actually do things in your daily lives are oversight which AI removes. And for a lot of tasks that's fine, great even. But people should at least know that the oversight is gone, not just assume someone else is handling it.</div>
       </div>
 
       <!-- Add more Q&A pairs as needed — copy the structure above -->
 
     </div>
 
-    <!-- PULL QUOTE FROM INTERVIEW -->
-    <div class="placeholder reveal">
-      <div class="placeholder-label">Key Quote — Pull Out the Most Significant Moment</div>
-      <p>Find the one thing your interviewee said that stopped you. The moment that changed your thinking, confirmed something, or complicated everything. Format it as a pull quote below.</p>
-      <span class="placeholder-hint">Replace the pull-quote div below with the actual quote once you have it.</span>
-    </div>
-
-    <div class="pull-quote cyan reveal">
-      "[The most significant thing your interviewee said — the quote that stayed with you after the conversation ended.]"
-      <cite>— [Interviewee Name or Pseudonym], [Role]</cite>
-    </div>
-
     <!-- REFLECTION -->
-    <div class="section-label reveal" style="margin-top:3rem;">After the Interview</div>
+    <div class="section-label reveal" style="margin-top:3rem;">About the Interview</div>
 
     <div class="reflection-block reveal">
       <div class="placeholder">
-        <div class="placeholder-label">Your Reflection — Write This Section (Most Important Part)</div>
-        <p>What did this conversation teach you that your reading didn't? Where did your interviewee's lived experience confirm, complicate, or contradict the research? What surprised you? What question did they answer that you didn't even know you had? How does this conversation fit into the larger argument of your project?</p>
-        <span class="placeholder-hint">Suggested length: 250–400 words. This reflection is often the richest part of an interview-based research project — don't treat it as a postscript.</span>
-      </div>
+        <div class="placeholder-label">Why Ask These Questions?</div>
+        <p>The focus of this interview was to shed light on what people don't know about really how MUCH control Agentic AI has in our lives, especially as its becoming a bigger and bigger trend. My questions focused a lot on how agentic AI works with most people's day to day lives and what's really going on under the hood as a result.</p>
     </div>
 
     <div class="placeholder reveal">
-      <div class="placeholder-label">Connection to Research — Write This Section</div>
-      <p>Choose one specific moment from the interview and connect it directly to one of your sources. How did something your interviewee said echo, challenge, or extend an argument from the literature? This shows the integration between your research and your primary source work.</p>
-      <span class="placeholder-hint">Suggested length: 100–200 words.</span>
+      <div class="placeholder-label">Why Keep it Private?</div>
+      <p>The interviewee wanted to keep their identity private to make sure their professional relationsihps were not affected as a result of this. Additionally, they weren't comfortable with their name being on a public site.</p>
     </div>
 
     <div class="page-nav reveal">
