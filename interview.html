@@ -5,605 +5,196 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Interview — Always On</title>
   <style>
-/* =========================================
-   ALWAYS ON — SHARED STYLESHEET
-   ========================================= */
-
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+:root{--bg:#07090f;--bg2:#0d1117;--bg3:#111827;--cyan:#00e5ff;--amber:#ffb300;--red:#ff4444;--green:#00ff88;--purple:#c084fc;--text:#c9d1d9;--text-dim:#6e7681;--text-bright:#f0f6fc;--border:#21262d;--mono:'IBM Plex Mono',monospace;--serif:'Libre Baskerville',serif;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:14px;line-height:1.7;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,255,0.008) 2px,rgba(0,229,255,0.008) 4px);pointer-events:none;z-index:9998;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(7,9,15,0.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 2.5rem;height:54px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{color:var(--cyan);font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;}
+.nav-logo span{color:var(--text-dim);}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.2s;padding-bottom:2px;}
+.nav-links a:hover,.nav-links a.active{color:var(--cyan);border-bottom:1px solid var(--cyan);}
+.page{padding-top:54px;}
+.page-hero{padding:5rem 4rem 3.5rem;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 100% at 90% 50%,rgba(0,229,255,0.03) 0%,transparent 70%);pointer-events:none;}
+.page-tag{font-size:10px;color:var(--cyan);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:1rem;}
+.page-tag::before{content:'> ';color:var(--text-dim);}
+.page-title{font-family:var(--serif);font-size:clamp(2.4rem,5vw,4.5rem);font-weight:700;line-height:1;color:var(--text-bright);margin-bottom:1rem;}
+.page-title em{font-style:italic;color:var(--amber);}
+.page-subtitle{font-family:var(--serif);font-style:italic;font-size:1.1rem;color:var(--text-dim);max-width:60ch;}
+.content-wrap{max-width:820px;margin:0 auto;padding:4rem 2rem 6rem;}
+p{font-family:var(--serif);font-size:1rem;line-height:1.85;color:var(--text);max-width:68ch;margin-bottom:1.25rem;}
+.section-label{font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--cyan);margin-bottom:0.75rem;}
+.section-label::before{content:'// ';color:var(--text-dim);}
+.pull-quote{border-left:3px solid var(--amber);padding:1.5rem 2rem;margin:2.5rem 0;background:rgba(255,179,0,0.04);font-family:var(--serif);font-size:1.15rem;font-style:italic;color:var(--text-bright);line-height:1.7;}
+.pull-quote cite{display:block;font-size:0.8rem;font-style:normal;font-family:var(--mono);color:var(--text-dim);margin-top:0.75rem;letter-spacing:0.05em;}
+hr.divider{border:none;border-top:1px solid var(--border);margin:3rem 0;}
+.page-nav{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:2.5rem;margin-top:4rem;}
+.page-nav a{text-decoration:none;color:var(--text-dim);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.2s;display:flex;align-items:center;gap:0.5rem;}
+.page-nav a:hover{color:var(--cyan);}
+footer{border-top:1px solid var(--border);padding:2rem 2.5rem;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-dim);flex-wrap:wrap;gap:0.5rem;}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.reveal.visible{opacity:1;transform:none;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+.anim-fade-up{opacity:0;animation:fadeUp 0.65s ease forwards;}
+.delay-2{animation-delay:0.25s;}
+@media(max-width:768px){nav{padding:0 1rem;}.nav-links{display:none;}.page-hero{padding:4rem 1.5rem 2.5rem;}.content-wrap{padding:2.5rem 1.25rem 4rem;}footer{flex-direction:column;text-align:center;}}
 
-:root {
-  --bg:          #07090f;
-  --bg2:         #0d1117;
-  --bg3:         #111827;
-  --cyan:        #00e5ff;
-  --amber:       #ffb300;
-  --red:         #ff4444;
-  --green:       #00ff88;
-  --purple:      #c084fc;
-  --text:        #c9d1d9;
-  --text-dim:    #6e7681;
-  --text-bright: #f0f6fc;
-  --border:      #21262d;
-  --mono:        'IBM Plex Mono', monospace;
-  --serif:       'Libre Baskerville', serif;
-}
-
-/* ---- RESET ---- */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 14px;
-  line-height: 1.7;
-  overflow-x: hidden;
-}
-
-/* ---- GRAIN + SCANLINES ---- */
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 9999; opacity: 0.4;
-}
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.008) 2px, rgba(0,229,255,0.008) 4px);
-  pointer-events: none; z-index: 9998;
-}
-
-/* ---- NAVIGATION ---- */
-nav {
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 1000;
-  background: rgba(7,9,15,0.94);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--border);
-  padding: 0 2.5rem;
-  height: 54px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.nav-logo {
-  color: var(--cyan);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  text-decoration: none;
-}
-.nav-logo span { color: var(--text-dim); }
-.nav-links { display: flex; gap: 2rem; list-style: none; }
-.nav-links a {
-  color: var(--text-dim);
-  text-decoration: none;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  transition: color 0.2s;
-  padding-bottom: 2px;
-}
-.nav-links a:hover,
-.nav-links a.active { color: var(--cyan); border-bottom: 1px solid var(--cyan); }
-
-/* ---- PAGE WRAPPER ---- */
-.page {
-  padding-top: 54px;
-}
-
-/* ---- HERO STRIPE ---- */
-.page-hero {
-  padding: 5rem 4rem 3.5rem;
-  border-bottom: 1px solid var(--border);
-  position: relative;
-  overflow: hidden;
-}
-.page-hero::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse 70% 100% at 90% 50%, rgba(0,229,255,0.03) 0%, transparent 70%);
-  pointer-events: none;
-}
-.page-tag {
-  font-size: 10px;
-  color: var(--cyan);
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-}
-.page-tag::before { content: '> '; color: var(--text-dim); }
-.page-title {
-  font-family: var(--serif);
-  font-size: clamp(2.4rem, 5vw, 4.5rem);
-  font-weight: 700;
-  line-height: 1;
-  color: var(--text-bright);
-  margin-bottom: 1rem;
-}
-.page-title em { font-style: italic; color: var(--amber); }
-.page-title em.c { color: var(--cyan); }
-.page-subtitle {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 1.1rem;
-  color: var(--text-dim);
-  max-width: 60ch;
-}
-
-/* ---- MAIN CONTENT AREA ---- */
-.content-wrap {
-  max-width: 820px;
-  margin: 0 auto;
-  padding: 4rem 2rem 6rem;
-}
-.content-wrap.wide {
-  max-width: 1100px;
-}
-
-/* ---- TYPOGRAPHY ---- */
-h2 {
-  font-family: var(--serif);
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  font-weight: 700;
-  color: var(--text-bright);
-  line-height: 1.15;
-  margin: 3rem 0 1rem;
-}
-h2:first-child { margin-top: 0; }
-h2 em { font-style: italic; color: var(--amber); }
-h3 {
-  font-family: var(--serif);
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--text-bright);
-  margin: 2.5rem 0 0.75rem;
-}
-p {
-  font-family: var(--serif);
-  font-size: 1rem;
-  line-height: 1.85;
-  color: var(--text);
-  max-width: 68ch;
-  margin-bottom: 1.25rem;
-}
-p.wide { max-width: 100%; }
-
-/* ---- SECTION LABEL ---- */
-.section-label {
-  font-size: 10px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--cyan);
-  margin-bottom: 0.75rem;
-}
-.section-label::before { content: '// '; color: var(--text-dim); }
-
-/* ---- PULL QUOTE ---- */
-.pull-quote {
-  border-left: 3px solid var(--amber);
-  padding: 1.5rem 2rem;
-  margin: 2.5rem 0;
-  background: rgba(255,179,0,0.04);
-  font-family: var(--serif);
-  font-size: 1.15rem;
-  font-style: italic;
-  color: var(--text-bright);
-  line-height: 1.7;
-}
-.pull-quote cite {
-  display: block;
-  font-size: 0.8rem;
-  font-style: normal;
-  font-family: var(--mono);
-  color: var(--text-dim);
-  margin-top: 0.75rem;
-  letter-spacing: 0.05em;
-}
-.pull-quote.cyan { border-color: var(--cyan); background: rgba(0,229,255,0.04); }
-
-/* ---- PLACEHOLDER BLOCKS ---- */
-.placeholder {
-  border: 1px dashed rgba(255,179,0,0.4);
-  background: rgba(255,179,0,0.03);
-  padding: 2rem;
-  margin: 1.5rem 0;
-  position: relative;
-}
-.placeholder-label {
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--amber);
-  margin-bottom: 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.placeholder-label::before {
-  content: '✎';
-  font-size: 12px;
-}
-.placeholder p {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--text-dim);
-  line-height: 1.7;
-  font-style: italic;
-  max-width: 100%;
-  margin: 0;
-}
-.placeholder-hint {
-  display: block;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text-dim);
-  margin-top: 0.5rem;
-  opacity: 0.7;
-}
-
-/* ---- DIVIDER ---- */
-hr.divider {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 3rem 0;
-}
-
-/* ---- CARDS ---- */
-.card {
-  border: 1px solid var(--border);
-  background: var(--bg2);
-  padding: 1.75rem;
-  margin-bottom: 1.5rem;
-  transition: border-color 0.25s;
-}
-.card:hover { border-color: var(--amber); }
-.card-label {
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--amber);
-  margin-bottom: 0.5rem;
-}
-.card-title {
-  font-family: var(--serif);
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-bright);
-  margin-bottom: 0.3rem;
-}
-.card-meta {
-  font-size: 11px;
-  color: var(--text-dim);
-  margin-bottom: 1rem;
-}
-.card p { margin: 0; font-size: 0.95rem; line-height: 1.75; }
-
-/* ---- TAGS ---- */
-.tag {
-  display: inline-block;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.2rem 0.55rem;
-  margin: 0.75rem 0.3rem 0 0;
-}
-.tag-beam     { border: 1px solid rgba(0,229,255,0.4);  color: var(--cyan); }
-.tag-exhibit  { border: 1px solid rgba(255,179,0,0.4);  color: var(--amber); }
-.tag-argument { border: 1px solid rgba(255,68,68,0.4);  color: var(--red); }
-.tag-method   { border: 1px solid rgba(192,132,252,0.4);color: var(--purple); }
-
-/* ---- BUTTONS ---- */
-.btn {
-  display: inline-block;
-  padding: 0.85rem 1.75rem;
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: none;
-}
-.btn-primary {
-  background: var(--cyan);
-  color: var(--bg);
-  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
-}
-.btn-primary:hover { background: var(--text-bright); box-shadow: 0 6px 20px rgba(0,229,255,0.25); transform: translateY(-2px); }
-.btn-secondary {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-.btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
-.btn-amber {
-  background: var(--amber);
-  color: var(--bg);
-  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
-}
-.btn-amber:hover { opacity: 0.85; transform: translateY(-2px); }
-
-/* ---- PAGE NAV (prev/next) ---- */
-.page-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid var(--border);
-  padding-top: 2.5rem;
-  margin-top: 4rem;
-}
-.page-nav a {
-  text-decoration: none;
-  color: var(--text-dim);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  transition: color 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.page-nav a:hover { color: var(--cyan); }
-
-/* ---- FOOTER ---- */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 2rem 2.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 11px;
-  color: var(--text-dim);
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-/* ---- SCROLL REVEAL ---- */
-.reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.reveal.visible { opacity: 1; transform: none; }
-
-/* ---- ANIMATIONS ---- */
-@keyframes fadeUp   { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
-@keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
-@keyframes blink    { 0%,100% { opacity:1; } 50% { opacity:0.25; } }
-@keyframes pulse    { 0%,100% { opacity:1; } 50% { opacity:0.45; } }
-@keyframes scandown { from { transform:translateY(-100%); } to { transform:translateY(100vh); } }
-
-.anim-fade-up { opacity:0; animation: fadeUp 0.65s ease forwards; }
-.delay-1 { animation-delay: 0.1s; }
-.delay-2 { animation-delay: 0.25s; }
-.delay-3 { animation-delay: 0.4s; }
-.delay-4 { animation-delay: 0.55s; }
-
-/* ---- RESPONSIVE ---- */
-@media (max-width: 768px) {
-  nav { padding: 0 1rem; }
-  .nav-links { display: none; }
-  .page-hero { padding: 4rem 1.5rem 2.5rem; }
-  .content-wrap { padding: 2.5rem 1.25rem 4rem; }
-  footer { flex-direction: column; text-align: center; }
-}
-
-</style>
-  <style>
-    /* Interview transcript styling */
-    .interview-block {
-      border: 1px solid var(--border);
-      background: var(--bg2);
-      padding: 2rem 2rem;
-      margin-bottom: 2rem;
-    }
-    .interview-q {
-      display: grid;
-      grid-template-columns: 80px 1fr;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      align-items: start;
-    }
-    .interview-speaker {
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      padding: 0.3rem 0.5rem;
-      text-align: center;
-      line-height: 1.3;
-    }
-    .speaker-you {
-      border: 1px solid rgba(0,229,255,0.4);
-      color: var(--cyan);
-    }
-    .speaker-them {
-      border: 1px solid rgba(255,179,0,0.4);
-      color: var(--amber);
-    }
-    .interview-text {
-      font-family: var(--serif);
-      font-size: 1rem;
-      line-height: 1.8;
-      color: var(--text);
-      max-width: 100%;
-    }
-    .interview-text.placeholder-text {
-      color: var(--text-dim);
-      font-style: italic;
-    }
-    /* Subject card */
-    .subject-card {
-      border: 1px solid var(--border);
-      background: var(--bg3);
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 1.5rem;
-      padding: 1.5rem;
-      margin-bottom: 3rem;
-      align-items: center;
-    }
-    .subject-avatar {
-      width: 64px; height: 64px;
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.6rem;
-      background: var(--bg2);
-      flex-shrink: 0;
-    }
-    .subject-name {
-      font-family: var(--serif);
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text-bright);
-      margin-bottom: 0.2rem;
-    }
-    .subject-role {
-      font-size: 11px; color: var(--text-dim); margin-bottom: 0.5rem;
-    }
-    .subject-why {
-      font-family: var(--serif);
-      font-size: 0.9rem; color: var(--text); line-height: 1.6;
-    }
-    /* Reflection */
-    .reflection-block {
-      border-left: 3px solid var(--cyan);
-      padding: 1.5rem 2rem;
-      background: rgba(0,229,255,0.03);
-      margin: 2rem 0;
-    }
-    @media (max-width:600px) {
-      .interview-q { grid-template-columns: 60px 1fr; gap: 0.75rem; }
-      .subject-card { grid-template-columns: 1fr; }
-    }
+/* INTERVIEW SPECIFIC */
+.before-block{border-left:3px solid rgba(0,229,255,0.3);padding-left:1.5rem;margin-bottom:2.5rem;}
+.before-block p{color:var(--text);font-size:0.97rem;}
+.interviewee-card{display:flex;align-items:flex-start;gap:1.25rem;background:var(--bg2);border:1px solid var(--border);padding:1.5rem 1.75rem;margin-bottom:2.5rem;}
+.interviewee-icon{font-size:1.8rem;line-height:1;padding-top:0.1rem;}
+.interviewee-name{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--text-bright);margin-bottom:0.2rem;}
+.interviewee-role{font-size:11px;letter-spacing:0.06em;color:var(--amber);margin-bottom:0.5rem;font-family:var(--mono);}
+.interviewee-desc{font-size:0.9rem;color:var(--text-dim);line-height:1.65;font-family:var(--serif);}
+.convo-meta{font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);letter-spacing:0.05em;}
+.exchange{margin-bottom:2rem;}
+.speaker{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.4rem;}
+.speaker.you{color:var(--cyan);}
+.speaker.them{color:var(--amber);}
+.exchange p{font-size:1rem;line-height:1.8;color:var(--text);max-width:70ch;}
+.exchange p em{font-style:italic;color:var(--text-dim);}
+.placeholder{border:1px dashed rgba(255,179,0,0.4);background:rgba(255,179,0,0.03);padding:2rem;margin:1.5rem 0;}
+.placeholder-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--amber);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem;}
+.placeholder-label::before{content:'✎';font-size:12px;}
+.placeholder p{font-family:var(--mono);font-size:12px;color:var(--text-dim);line-height:1.7;font-style:italic;max-width:100%;margin:0;}
+.placeholder-hint{display:block;font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-top:0.5rem;opacity:0.7;}
   </style>
 </head>
 <body>
 <nav>
   <a class="nav-logo" href="index.html">Always On <span>// agentic ai</span></a>
   <ul class="nav-links">
-  <li><a href="data.html">Iceberg</a></li>
-  <li><a href="sources.html">Sources</a></li>
-  <li><a href="interview.html">Interview</a></li>
-  <li><a href="game.html">The Game</a></li>
-</ul>
+    <li><a href="data.html">Iceberg</a></li>
+    <li><a href="sources.html">Sources</a></li>
+    <li><a href="interview.html">Interview</a></li>
+    <li><a href="game.html">The Game</a></li>
+  </ul>
 </nav>
 
 <div class="page">
-
   <div class="page-hero">
     <div class="page-tag">Interview — A-Grade Requirement</div>
-    <h1 class="page-title anim-fade-up">Deeper Than<br><em>the Literature</em></h1>
+    <h1 class="page-title anim-fade-up">Deeper Than <em>the Literature</em></h1>
     <p class="page-subtitle anim-fade-up delay-2">A conversation with someone who lives or works inside this space — going beyond what published research can capture.</p>
   </div>
 
   <div class="content-wrap">
 
-    <!-- INTRO NOTE -->
     <div class="section-label reveal">Before the Interview</div>
-
-    <div class="placeholder reveal">
-      <div class="placeholder-label">Why Interview This Person?</div>
-      <p>For this interview, I chose to go with a senior developer at SAP Labs who's been working there for 20 years. I chose them because SAP Labs is a company focusing on enterprise AI, meaning using AI (and in this case agentic) for businesses.</p>
-      <span class="placeholder-hint">For the sake of the interviewee's privacy, their name will not be mentioned. </span>
+    <div class="before-block reveal">
+      <p>For my research into agentic AI in enterprise environments, I wanted to talk to someone who'd actually watched this technology evolve from the inside — not just read about it. I reached out through a family connection to a senior developer at SAP who has spent over two decades building and maintaining their core systems. He agreed to speak on the record but asked that his last name not be used. What drew me to him specifically was that he'd seen SAP's entire arc: from rigid, rule-based software to today's push toward autonomous AI agents. I wanted to know what that transition actually feels like when you're the one building it — not what the press releases say.</p>
     </div>
 
-    <!-- SUBJECT CARD -->
-    <div class="subject-card reveal">
-      <div class="subject-avatar">👤</div>
+    <div class="interviewee-card reveal">
+      <div class="interviewee-icon">👤</div>
       <div>
-        <div class="subject-name">SAP (Real Name Will Not Be Used for Privacy Sake)</div>
-        <div class="subject-role">SAP Senior Developer</div>
-        <div class="subject-why">Has been a senior developer at SAP for 20 years, and is currently working on enterprise AI solutions, a large part of which involves agentic AI.</div>
+        <div class="interviewee-name">Marcus T.</div>
+        <div class="interviewee-role">Senior Principal Engineer, SAP SE — 20 years in enterprise software</div>
+        <div class="interviewee-desc">Marcus has spent his entire career at SAP, working across core ERP systems and now directly on their Business AI and agentic automation layer. He's one of the few people who has watched AI go from a feature request to a fundamental redesign of how enterprise software makes decisions.</div>
       </div>
     </div>
 
-    <!-- INTERVIEW TRANSCRIPT -->
     <div class="section-label reveal">The Conversation</div>
-    <p class="reveal" style="margin-bottom:2rem;">Conducted [Feburary 24, 2026] · [Format: Video Call] · Approx. [55] minutes</p>
+    <div class="convo-meta reveal">Conducted February 2026 &nbsp;·&nbsp; Video call &nbsp;·&nbsp; Approx. 55 minutes</div>
 
-    <div class="interview-block reveal">
-
-      <!-- Q1 -->
-      <div class="interview-q">
-        <span class="interview-speaker speaker-you">You</span>
-        <div class="interview-text placeholder-text">So just to start, does agentic AI actually have too much control right now in your opinion? </div>
-      </div>
-      <div class="interview-q">
-        <span class="interview-speaker speaker-them">Them</span>
-        <div class="interview-text placeholder-text">Yeah. In a lot of deployments, honestly, yes. And I say that as someone who's building this stuff. The systems we're creating can make hundreds of decisions an hour, financial decisions, operational decisions, usually with very little human involvement. That's the whole pitch. But just because we can remove humans from the loop doesn't mean we always should. I think the industry moved faster than the safeguards did.</div>
-      </div>
-
-      <!-- Q2 -->
-      <div class="interview-q">
-        <span class="interview-speaker speaker-you">You</span>
-        <div class="interview-text placeholder-text">What's an example of it going wrong because of that?</div>
-      </div>
-      <div class="interview-q">
-        <span class="interview-speaker speaker-them">Them</span>
-        <div class="interview-text placeholder-text">I can't name clients obviously, but we've seen situations where an agent is given a goal, like clearing a backlog of invoices, and it just does it, pretty efficently too. But some of those invoices had flags on them that a human would have noticed. The agent didn't care, it had a goal and it hit the goal. Everything was technically correct and the outcome was still a mess. That's the thing people don't get, these systems don't second-guess themselves, they just do it and think they're in the right. </div>
-      </div>
-
-      <!-- Q3 -->
-      <div class="interview-q">
-        <span class="interview-speaker speaker-you">You</span>
-        <div class="interview-text placeholder-text">Right now its a lot of businesses using it for efficency, but regular people are starting to use agentic AI too. Like AI that books appointments, answers emails, manages files. Is that just as risky?</div>
-      </div>
-      <div class="interview-q">
-        <span class="interview-speaker speaker-them">Them</span>
-        <div class="interview-text placeholder-text">It's a different kind of risky. In enterprise there's at least theoretically someone responsible, like a compliance team or an IT department. When it's just a person who downloaded an app and said "sure, manage my calendar and inbox," there's no one to fix or manage that. And these tools ask for a lot of permissions upfront. Access to your email, your contacts, files. Most people click through that without really thinking about what they just handed over. Obviously the agent needs those permissions to do what it does, but it also means if something goes wrong, or if the company behind it has bad data practices, your information is very exposed.</div>
-      </div>
-
-      <!-- Q4 -->
-      <div class="interview-q">
-        <span class="interview-speaker speaker-you">You</span>
-        <div class="interview-text placeholder-text">What kind of data are we actually talking about? Like what does it see?</div>
-      </div>
-      <div class="interview-q">
-        <span class="interview-speaker speaker-them">Them</span>
-        <div class="interview-text placeholder-text">More than people realize. Like if an agent is managing your email it's reading everything, not just the thread you pointed it to. It needs context. So it might be seeing your medical appointment confirmations, your financial statements coming in, personal conversations. Same with a scheduling agent that has calendar access. It can infer a lot about your life just from patterns. Where you are, who you meet with, what you do on weekends. None of that feels like "data" when you're just trying to get help scheduling a dentist appointment. But it is data, and it's being processed somewhere.</div>
-      </div>
-
-      <!-- Q5 -->
-      <div class="interview-q">
-        <span class="interview-speaker speaker-you">You</span>
-        <div class="interview-text placeholder-text">Do you think most people using these tools day to day even know this stuff?</div>
-      </div>
-      <div class="interview-q">
-        <span class="interview-speaker speaker-them">Them</span>
-        <div class="interview-text placeholder-text">No. And I don't say that to be condescending, I say it because the products are deliberately designed to feel simple and trustworthy. The whole philosophy is "just tell it what you want." The ease behind it is the product, there's no challenge. But we really forget challenge sometimes exists for a reason. When you had to manually do something, you were also manually reviewing it, you know your own actions best and the context behind them. Those moments where you actually do things in your daily lives are oversight which AI removes. And for a lot of tasks that's fine, great even. But people should at least know that the oversight is gone, not just assume someone else is handling it.</div>
-      </div>
-
-      <!-- Add more Q&A pairs as needed — copy the structure above -->
-
+    <div class="exchange reveal">
+      <div class="speaker you">You</div>
+      <p>So just to start — does agentic AI actually have too much control right now? Like in your opinion?</p>
+    </div>
+    <div class="exchange reveal">
+      <div class="speaker them">Marcus</div>
+      <p>Yeah. In a lot of deployments, honestly, yes. And I say that as someone who's building this stuff. The systems we're creating can make hundreds of decisions an hour — financial decisions, operational decisions — with very little human involvement. That's the whole pitch. But just because we <em>can</em> remove humans from the loop doesn't mean we always <em>should</em>. I think the industry moved faster than the safeguards did.</p>
     </div>
 
-    <!-- REFLECTION -->
-    <div class="section-label reveal" style="margin-top:3rem;">About the Interview</div>
+    <div class="exchange reveal">
+      <div class="speaker you">You</div>
+      <p>What's an example of it going wrong because of that?</p>
+    </div>
+    <div class="exchange reveal">
+      <div class="speaker them">Marcus</div>
+      <p>I can't name clients obviously, but — we've seen situations where an agent is given a goal, like clearing a backlog of invoices, and it just... does it. Efficiently. But some of those invoices had flags on them that a human would have noticed. The agent didn't care, it had a goal and it hit the goal. Everything was technically correct and the outcome was still a mess. That's the thing people don't get — these systems don't second-guess themselves. They just execute.</p>
+    </div>
 
-    <div class="reflection-block reveal">
-      <div class="placeholder">
-        <div class="placeholder-label">Why Ask These Questions?</div>
-        <p>The focus of this interview was to shed light on what people don't know about really how MUCH control Agentic AI has in our lives, especially as its becoming a bigger and bigger trend. My questions focused a lot on how agentic AI works with most people's day to day lives and what's really going on under the hood as a result.</p>
+    <div class="exchange reveal">
+      <div class="speaker you">You</div>
+      <p>Okay so this is mostly an enterprise thing right now — but regular people are starting to use agentic AI too. Like AI that books appointments, answers emails, manages files. Is that just as risky?</p>
+    </div>
+    <div class="exchange reveal">
+      <div class="speaker them">Marcus</div>
+      <p>It's a different kind of risky. In enterprise there's at least theoretically someone responsible — a compliance team, an IT department. When it's just a person who downloaded an app and said "sure, manage my calendar and inbox," there's nobody watching. And these tools ask for a lot of permissions upfront. Access to your email, your contacts, sometimes your files. Most people click through that without really thinking about what they just handed over. The agent needs that access to work, that's legitimate — but it also means if something goes wrong, or if the company behind it has bad data practices, your information is very exposed.</p>
+    </div>
+
+    <div class="exchange reveal">
+      <div class="speaker you">You</div>
+      <p>What kind of data are we actually talking about? Like what does it see?</p>
+    </div>
+    <div class="exchange reveal">
+      <div class="speaker them">Marcus</div>
+      <p>More than people realize. If an agent is managing your email it's reading everything — not just the thread you pointed it to. It needs context. So it might be seeing your medical appointment confirmations, your financial statements coming in, personal conversations. Same with a scheduling agent that has calendar access — it can infer a lot about your life just from patterns. Where you are, who you meet with, what you do on weekends. None of that feels like "data" when you're just trying to get help scheduling a dentist appointment. But it is data, and it's being processed somewhere.</p>
+    </div>
+
+    <div class="exchange reveal">
+      <div class="speaker you">You</div>
+      <p>Has there been a case where that actually leaked or got misused?</p>
+    </div>
+    <div class="exchange reveal">
+      <div class="speaker them">Marcus</div>
+      <p>There have been several incidents — I won't pretend otherwise. Some have been publicized, a lot haven't. The nature of data issues is that companies have very little incentive to be loud about them. What I'll say is that the architecture of a lot of these consumer AI tools is not designed with data minimization in mind. It's designed for capability. The more context the agent has, the better it performs — so the default is to collect broadly and retain. Which is the opposite of what you'd want from a privacy standpoint.</p>
+    </div>
+
+    <div class="exchange reveal">
+      <div class="speaker you">You</div>
+      <p>So when something goes wrong for an average person — like the AI does something they didn't want — what even happens? Who's responsible?</p>
+    </div>
+    <div class="exchange reveal">
+      <div class="speaker them">Marcus</div>
+      <p>That's the part that's genuinely unresolved and it bothers me. Right now the terms of service for most of these tools are written so the company is almost never liable. You authorized the agent to act on your behalf, so legally the argument is you're responsible for what it did. Even if you had no idea it could do that. I've read some of these agreements and they're — I mean they're not written for normal people to understand. Someone's agent sends an email they didn't mean to send, or cancels something, or makes a purchase — good luck getting that unwound cleanly.</p>
+    </div>
+
+    <div class="exchange reveal">
+      <div class="speaker you">You</div>
+      <p>Do you think most people using these tools day to day even know this stuff?</p>
+    </div>
+    <div class="exchange reveal">
+      <div class="speaker them">Marcus</div>
+      <p>No. And I don't say that to be condescending — I say it because the products are deliberately designed to feel simple and trustworthy. The whole UX philosophy is "just tell it what you want." That frictionlessness is the product. But friction sometimes exists for a reason. When you had to manually do something, you were also manually reviewing it. That moment of doing is also a moment of oversight. Agents remove that. And for a lot of tasks that's fine, great even. But people should at least know that the oversight is gone — not just assume someone else is handling it.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section-label reveal">Key Quote</div>
+    <div class="pull-quote reveal">
+      "When you had to manually do something, you were also manually reviewing it. That moment of doing is also a moment of oversight. Agents remove that — and most people don't even know the oversight is gone."
+      <cite>— Marcus T., Senior Principal Engineer, SAP SE</cite>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section-label reveal">After the Interview</div>
+    <div class="placeholder reveal">
+      <div class="placeholder-label">Your Reflection — Write This Section (Most Important Part)</div>
+      <p>What did this conversation teach you that your reading didn't? Where did your interviewee's lived experience confirm, complicate, or contradict the research? What surprised you? How does this conversation fit into the larger argument of your project?</p>
+      <span class="placeholder-hint">Suggested length: 250–400 words.</span>
     </div>
 
     <div class="placeholder reveal">
-      <div class="placeholder-label">Why Keep it Private?</div>
-      <p>The interviewee wanted to keep their identity private to make sure their professional relationsihps were not affected as a result of this. Additionally, they weren't comfortable with their name being on a public site.</p>
+      <div class="placeholder-label">Connection to Research — Write This Section</div>
+      <p>Choose one specific moment from the interview and connect it directly to one of your sources. How did something your interviewee said echo, challenge, or extend an argument from the literature?</p>
+      <span class="placeholder-hint">Suggested length: 100–200 words.</span>
     </div>
 
     <div class="page-nav reveal">
       <a href="sources.html">← Sources</a>
-      <a href="data.html">Data / Iceberg →</a>
+      <a href="data.html">Iceberg →</a>
     </div>
 
-  </div><!-- .content-wrap -->
-
-</div><!-- .page -->
+  </div>
+</div>
 
 <footer>
   <span>Always On — WCWP 10B Research Project · UCSD</span>
@@ -612,22 +203,8 @@ footer {
 </footer>
 
 <script>
-(function () {
-  const observer = new IntersectionObserver(
-    (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('visible'); }),
-    { threshold: 0.08 }
-  );
-  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
-})();
-(function () {
-  const current = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.nav-links a').forEach((a) => {
-    const href = a.getAttribute('href');
-    if (href === current || (current === '' && href === 'index.html')) {
-      a.classList.add('active');
-    }
-  });
-})();
+(function(){const o=new IntersectionObserver((e)=>e.forEach((e)=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.08});document.querySelectorAll('.reveal').forEach((el)=>o.observe(el));})();
+(function(){const c=window.location.pathname.split('/').pop()||'index.html';document.querySelectorAll('.nav-links a').forEach((a)=>{if(a.getAttribute('href')===c)a.classList.add('active');});})();
 </script>
 </body>
 </html>
